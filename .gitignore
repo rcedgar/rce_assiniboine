@@ -1,0 +1,10 @@
+mp/
+tmp*
+*.tmp
+misc/*
+!misc/cmd.txt
+big_*/
+big*
+__pycache__/
+~$*
+.swp
