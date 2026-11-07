@@ -1,0 +1,200 @@
+cluster_nr=97	members=259	centroid=ROD|SRR12714337_13982_circle_13982:orf19:code1:1279-2067/3252(-3)	groups=ambivirus_SerratusID90:2;ROD:257;	new_controls=257	species=1
+cluster_nr=332	members=156	centroid=ROD|ERR7366464_163226_circle_163226:orf11:code1:1279-2493/2897(-1)	groups=plasmidsub7000_gb260921:1;ROD:155;	new_controls=155	species=28
+cluster_nr=912	members=102	centroid=ROD|SRR1208761_505_circle_505:orf4:code1:288-893/1095(+3)	groups=obelisk_zheludev:2;ROD:100;	new_controls=100	species=2
+cluster_nr=1021	members=96	centroid=ROD|SRR19432512_665_circle_665:orf1:code1:358-1377/1022(+1)	groups=obelisk_zheludev:14;ROD:82;	nCe=1(1.0%)	new_controls=82	species=15
+cluster_nr=1128	members=91	centroid=plasmidsub7000_gb260921|NC_008352.1:orf1:code1:91-1092/2278(+1)	groups=plasmidsub7000_gb260921:88;ROD:3;	new_controls=3	species=55
+cluster_nr=1131	members=91	centroid=ROD|SRR12632522_209511_circle_209511:orf3:code1:113-778/798(-2)	groups=obelisk_zheludev:65;ROD:26;	new_controls=26	species=36
+cluster_nr=1327	members=84	centroid=obelisk_zheludev|._cluster=Cluster_002685_000009_000001:orf3:code1:713-1309/848(-1)	groups=obelisk_zheludev:79;ROD:5;	new_controls=5	species=26
+cluster_nr=1654	members=76	centroid=ROD|SRR769398_35516_circle_35516:orf2:code1:782-1531/801(+2)	groups=obelisk_zheludev:1;ROD:75;	new_controls=75	species=3
+cluster_nr=1907	members=71	centroid=obelisk_zheludev|._cluster=Cluster_003640_000002_000001:orf3:code1:12-674/782(-1)	groups=obelisk_zheludev:56;ROD:15;	new_controls=15	species=37
+cluster_nr=1970	members=70	centroid=humancirc_gb260921|hsa-UBC_0012:orf1:code1:595-1341/646(+1)	groups=humancirc_gb260921:9;ROD:61;	nCe=23(32.9%)	nCem=38(54.3%)	new_controls=61	species=27
+cluster_nr=2093	members=68	centroid=obelisk_zheludev|._cluster=Cluster_000024_000006_000001:orf2:code1:764-1498/1072(-1)	groups=obelisk_zheludev:47;ROD:21;	new_controls=21	species=17
+cluster_nr=2156	members=68	centroid=obelisk_zheludev|._cluster=Cluster_000016_000012_000003:orf3:code1:927-1658/1226(-1)	groups=obelisk_zheludev:66;ROD:2;	new_controls=2	species=10
+cluster_nr=2517	members=62	centroid=ROD|SRR6914764_65668_circle_65668:orf1:code1:818-1537/1117(-1)	groups=obelisk_zheludev:54;ROD:8;	new_controls=8	species=41
+cluster_nr=2779	members=60	centroid=ROD|SRR10932010_116449_circle_116449:orf1:code1:822-1514/1135(+1)	groups=obelisk_zheludev:36;ROD:24;	new_controls=24	species=9
+cluster_nr=2789	members=59	centroid=ROD|ERR1352934_24368_circle_24368:orf1:code1:533-1342/1205(+1)	groups=obelisk_zheludev:50;ROD:9;	new_controls=9	species=18
+cluster_nr=2790	members=59	centroid=obelisk_zheludev|._cluster=Cluster_003422_000001_000001:orf1:code1:310-1002/922(+1)	groups=obelisk_zheludev:58;ROD:1;	new_controls=1	species=52
+cluster_nr=3365	members=54	centroid=obelisk_zheludev|._cluster=Cluster_002847_000009_000001:orf3:code1:39-686/859(-1)	groups=obelisk_zheludev:51;ROD:3;	new_controls=3	species=21
+cluster_nr=3597	members=53	centroid=obelisk_zheludev|alpha_cluster=Cluster_000001_000001_000008:orf3:code1:315-614/1164(-1)	groups=obelisk_zheludev:19;ROD:34;	new_controls=34	species=1
+cluster_nr=3760	members=51	centroid=obelisk_zheludev|._cluster=Cluster_005890_000001_000001:orf1:code1:25-714/718(-1)	groups=obelisk_zheludev:38;ROD:13;	new_controls=13	species=36
+cluster_nr=3916	members=50	centroid=obelisk_zheludev|._cluster=Cluster_000847_000001_000001:orf6:code1:169-867/1250(-1)	groups=obelisk_zheludev:47;ROD:3;	new_controls=3	species=34
+cluster_nr=4258	members=49	centroid=obelisk_zheludev|._cluster=Cluster_004733_000001_000001:orf2:code1:531-911/824(-1)	groups=obelisk_zheludev:35;ROD:14;	new_controls=14	species=5
+cluster_nr=4449	members=47	centroid=ROD|SRR7540567_1397864_circle_1397864:orf2:code1:752-1459/811(+1)	groups=obelisk_zheludev:39;ROD:8;	new_controls=8	species=29
+cluster_nr=4452	members=47	centroid=ROD|SRR21010718_159393_circle_159393:orf1:code1:157-798/632(+1)	groups=plasmidsub7000_gb260921:1;ROD:46;	nCe=13(27.7%)	new_controls=46	species=30
+cluster_nr=4625	members=46	centroid=obelisk_zheludev|._cluster=Cluster_000692_000002_000001:orf1:code1:229-879/1277(+1)	groups=obelisk_zheludev:26;ROD:20;	new_controls=20	species=15
+cluster_nr=4629	members=46	centroid=ROD|SRR12980219_7239_circle_7239:orf2:code1:344-964/1168(+1)	groups=obelisk_zheludev:28;ROD:18;	new_controls=18	species=10
+cluster_nr=4770	members=46	centroid=ROD|SRR6425391_10858_circle_10858:orf1:code1:612-1019/989(+1)	groups=obelisk_zheludev:19;ROD:27;	new_controls=27	species=2
+cluster_nr=5045	members=44	centroid=ROD|SRR25458826_27900_circle_27900:orf4:code1:762-1454/785(+1)	groups=obelisk_zheludev:13;ROD:31;	new_controls=31	species=5
+cluster_nr=5288	members=43	centroid=ROD|ERR1356717_36571_circle_36571:orf2:code1:228-911/967(+1)	groups=obelisk_zheludev:34;ROD:9;	new_controls=9	species=17
+cluster_nr=5459	members=43	centroid=ROD|SRR17509974_24588_circle_24588:orf1:code1:556-1287/1145(+1)	groups=obelisk_zheludev:23;ROD:20;	new_controls=20	species=18
+cluster_nr=5478	members=43	centroid=ROD|SRR6425401_35952_circle_35952:orf1:code1:226-906/811(+1)	groups=obelisk_zheludev:7;ROD:36;	new_controls=36	species=4
+cluster_nr=5526	members=42	centroid=obelisk_zheludev|._cluster=Cluster_001543_000007_000001:orf3:code1:857-1726/1007(+1)	groups=obelisk_zheludev:31;ROD:11;	new_controls=11	species=22
+cluster_nr=5527	members=42	centroid=obelisk_zheludev|._cluster=Cluster_002454_000001_000001:orf5:code1:766-1575/1018(-1)	groups=obelisk_zheludev:41;ROD:1;	new_controls=1	species=36
+cluster_nr=5537	members=42	centroid=obelisk_zheludev|._cluster=Cluster_002097_000011_000002:orf4:code1:766-1410/897(-3)	groups=obelisk_zheludev:36;ROD:6;	new_controls=6	species=14
+cluster_nr=5732	members=42	centroid=obelisk_zheludev|._cluster=Cluster_001053_000001_000002:orf1:code1:1081-1716/1174(+1)	groups=obelisk_zheludev:37;ROD:5;	new_controls=5	species=24
+cluster_nr=5786	members=41	centroid=obelisk_zheludev|._cluster=Cluster_000022_000003_000011:orf4:code1:617-1270/860(-1)	groups=obelisk_zheludev:29;ROD:12;	new_controls=12	species=14
+cluster_nr=6297	members=40	centroid=obelisk_zheludev|._cluster=Cluster_000115_000003_000001:orf3:code1:535-954/1329(-3)	groups=obelisk_zheludev:30;ROD:10;	new_controls=10	species=14
+cluster_nr=6358	members=40	centroid=ROD|SRR7690870_270545_circle_270545:orf3:code1:815-1222/1012(+1)	groups=obelisk_zheludev:16;ROD:24;	new_controls=24	species=9
+cluster_nr=6362	members=40	centroid=ROD|SRR8416091_137363_circle_137363:orf3:code1:571-1215/1169(-1)	groups=obelisk_zheludev:26;ROD:14;	new_controls=14	species=4
+cluster_nr=6372	members=40	centroid=obelisk_zheludev|._cluster=Cluster_004487_000007_000002:orf4:code1:814-1482/846(-3)	groups=obelisk_zheludev:1;ROD:39;	new_controls=39	species=1
+cluster_nr=6416	members=39	centroid=obelisk_zheludev|._cluster=Cluster_000018_000001_000001:orf5:code1:76-579/922(-1)	groups=obelisk_zheludev:27;ROD:12;	new_controls=12	species=12
+cluster_nr=6701	members=38	centroid=obelisk_zheludev|._cluster=Cluster_000849_000002_000002:orf3:code1:429-1160/1249(+1)	groups=obelisk_zheludev:29;ROD:9;	new_controls=9	species=17
+cluster_nr=7043	members=37	centroid=obelisk_zheludev|._cluster=Cluster_002906_000002_000001:orf1:code1:145-891/959(+1)	groups=obelisk_zheludev:36;ROD:1;	new_controls=1	species=34
+cluster_nr=7048	members=37	centroid=ROD|SRR14039646_31776_circle_31776:orf1:code1:690-1325/1257(-1)	groups=obelisk_zheludev:21;ROD:16;	new_controls=16	species=17
+cluster_nr=7353	members=37	centroid=obelisk_zheludev|._cluster=Cluster_002428_000003_000001:orf3:code1:709-1305/863(-1)	groups=obelisk_zheludev:33;ROD:4;	new_controls=4	species=5
+cluster_nr=7403	members=36	centroid=ROD|SRR3711352_42994_circle_42994:orf12:code1:1265-2428/2346(-2)	groups=plasmidsub7000_gb260921:6;ROD:30;	new_controls=30	species=32
+cluster_nr=7421	members=36	centroid=obelisk_zheludev|nu_cluster=Cluster_000014_000001_000001:orf2:code1:233-919/1180(+1)	groups=obelisk_zheludev:3;ROD:33;	new_controls=33	species=3
+cluster_nr=7424	members=36	centroid=ROD|SRR6425420_31021_circle_31021:orf2:code1:914-1570/1001(+1)	groups=obelisk_zheludev:26;ROD:10;	new_controls=10	species=7
+cluster_nr=7431	members=36	centroid=ROD|SRR10972810_39971_circle_39971:orf3:code1:5-613/1201(-1)	groups=obelisk_zheludev:15;ROD:21;	new_controls=21	species=17
+cluster_nr=7456	members=36	centroid=ROD|SRR1138694_22807_circle_22807:orf4:code1:825-1265/844(-1)	groups=obelisk_zheludev:33;ROD:3;	new_controls=3	species=17
+cluster_nr=7814	members=36	centroid=ROD|SRR6425432_54389_circle_54389:orf1:code1:445-1029/1182(+1)	groups=obelisk_zheludev:13;ROD:23;	new_controls=23	species=2
+cluster_nr=7827	members=35	centroid=humancirc_gb260921|hsa-PABPC1_0050:orf1:code1:166-1938/1942(+1)	groups=humancirc_gb260921:34;ROD:1;	nCe=17(48.6%)	nCem=5(14.3%)	new_controls=1	species=31
+cluster_nr=7857	members=35	centroid=obelisk_zheludev|._cluster=Cluster_002605_000006_000001:orf4:code1:642-1235/985(-1)	groups=obelisk_zheludev:22;ROD:13;	new_controls=13	species=13
+cluster_nr=8161	members=35	centroid=obelisk_zheludev|iota_cluster=Cluster_000010_000001_000001:orf1:code1:169-747/781(+1)	groups=obelisk_zheludev:1;ROD:34;	new_controls=34	species=1
+cluster_nr=8163	members=35	centroid=ROD|SRR6425391_68676_circle_68676:orf5:code1:662-1162/740(-1)	groups=obelisk_zheludev:5;ROD:30;	new_controls=30	species=4
+cluster_nr=8213	members=35	centroid=ROD|SRR8416098_172862_circle_172862:orf3:code1:440-667/1009(-1)	groups=obelisk_zheludev:21;ROD:14;	new_controls=14	species=11
+cluster_nr=8252	members=34	centroid=ROD|SRR11741263_16173_circle_16173:orf3:code1:1068-1757/1138(-1)	groups=obelisk_zheludev:1;ROD:33;	new_controls=33	species=2
+cluster_nr=8262	members=34	centroid=ROD|SRR14039900_411861_circle_411861:orf2:code1:50-649/745(-1)	groups=obelisk_zheludev:2;ROD:32;	new_controls=32	species=7
+cluster_nr=8266	members=34	centroid=ROD|ERR3473669_15519_circle_15519:orf5:code1:286-870/1169(-1)	groups=obelisk_zheludev:12;ROD:22;	new_controls=22	species=9
+cluster_nr=8278	members=34	centroid=ROD|SRR24058844_160202_circle_160202:orf1:code1:983-1522/1004(+1)	groups=obelisk_zheludev:17;ROD:17;	new_controls=17	species=16
+cluster_nr=8671	members=34	centroid=ROD|ERR2815195_18340_circle_18340:orf1:code1:92-688/845(+1)	groups=obelisk_zheludev:30;ROD:4;	new_controls=4	species=9
+cluster_nr=8716	members=33	centroid=obelisk_zheludev|._cluster=Cluster_000075_000011_000001:orf2:code1:1118-1927/1450(-1)	groups=obelisk_zheludev:13;ROD:20;	new_controls=20	species=6
+cluster_nr=8723	members=33	centroid=ROD|ERR2809080_60921_circle_60921:orf2:code1:230-922/1136(-1)	groups=obelisk_zheludev:26;ROD:7;	new_controls=7	species=17
+cluster_nr=9221	members=32	centroid=ROD|ERR11494504_20650_circle_20650:orf2:code1:729-1430/793(-1)	groups=obelisk_zheludev:8;ROD:24;	new_controls=24	species=7
+cluster_nr=9744	members=31	centroid=obelisk_zheludev|._cluster=Cluster_002266_000001_000001:orf4:code1:610-1365/1042(-1)	groups=obelisk_zheludev:21;ROD:10;	new_controls=10	species=13
+cluster_nr=9756	members=31	centroid=obelisk_zheludev|._cluster=Cluster_000911_000001_000001:orf1:code1:49-705/1239(+1)	groups=obelisk_zheludev:21;ROD:10;	new_controls=10	species=21
+cluster_nr=9766	members=31	centroid=obelisk_zheludev|._cluster=Cluster_005409_000003_000001:orf2:code1:664-1254/703(-1)	groups=obelisk_zheludev:30;ROD:1;	new_controls=1	species=27
+cluster_nr=9780	members=31	centroid=obelisk_zheludev|._cluster=Cluster_002139_000005_000001:orf2:code1:1039-1569/1047(+1)	groups=obelisk_zheludev:27;ROD:4;	new_controls=4	species=17
+cluster_nr=9978	members=31	centroid=ROD|ERR11474901_42267_circle_42267:orf1:code1:94-393/1163(+1)	groups=obelisk_zheludev:6;ROD:25;	new_controls=25	species=1
+cluster_nr=10305	members=31	centroid=ROD|SRR18969882_10085_circle_10085:orf1:code1:511-1203/785(+1)	groups=obelisk_zheludev:1;ROD:30;	new_controls=30	species=1
+cluster_nr=10393	members=30	centroid=ROD|SRR7539006_294751_circle_294751:orf3:code1:200-895/812(-1)	groups=obelisk_zheludev:17;ROD:13;	new_controls=13	species=12
+cluster_nr=10397	members=30	centroid=ROD|SRR23258100_23260_circle_23260:orf6:code1:1069-1755/1286(-1)	groups=obelisk_zheludev:1;ROD:29;	new_controls=29	species=4
+cluster_nr=10410	members=30	centroid=ROD|SRR6484343_167699_circle_167699:orf1:code1:235-828/912(+1)	groups=obelisk_zheludev:2;ROD:28;	new_controls=28	species=2
+cluster_nr=10422	members=30	centroid=ROD|SRR5368800_52537_circle_52537:orf2:code1:408-956/1108(+1)	groups=obelisk_zheludev:9;ROD:21;	new_controls=21	species=15
+cluster_nr=10779	members=30	centroid=obelisk_zheludev|._cluster=Cluster_001338_000005_000001:orf6:code1:28-774/1095(-3)	groups=obelisk_zheludev:24;ROD:6;	new_controls=6	species=19
+cluster_nr=10863	members=30	centroid=ROD|SRR6425451_25897_circle_25897:orf2:code1:1038-1757/1168(+1)	groups=obelisk_zheludev:4;ROD:26;	new_controls=26	species=1
+cluster_nr=10946	members=30	centroid=ROD|SRR8416096_37556_circle_37556:orf3:code1:806-1432/939(-2)	groups=obelisk_zheludev:11;ROD:19;	new_controls=19	species=6
+cluster_nr=11016	members=29	centroid=ROD|SRR6201276_32847_circle_32847:orf3:code1:63-686/1048(+1)	groups=obelisk_zheludev:26;ROD:3;	new_controls=3	species=17
+cluster_nr=11055	members=29	centroid=obelisk_zheludev|._cluster=Cluster_000980_000001_000001:orf1:code1:8-517/1226(+1)	groups=obelisk_zheludev:27;ROD:2;	new_controls=2	species=23
+cluster_nr=11693	members=28	centroid=obelisk_zheludev|._cluster=Cluster_000313_000013_000001:orf1:code1:505-1188/1249(+1)	groups=obelisk_zheludev:20;ROD:8;	new_controls=8	species=10
+cluster_nr=12203	members=28	centroid=ROD|SRR6425426_33480_circle_33480:orf4:code1:382-1113/1432(-1)	groups=obelisk_zheludev:19;ROD:9;	new_controls=9	species=1
+cluster_nr=12284	members=28	centroid=obelisk_zheludev|._cluster=Cluster_001156_000003_000001:orf1:code1:667-1374/1199(+1)	groups=obelisk_zheludev:19;ROD:9;	new_controls=9	species=13
+cluster_nr=12407	members=27	centroid=humancirc_gb260921|hsa-MCCC1_0084:orf3:code1:545-2020/1946(+1)	groups=humancirc_gb260921:25;ROD:2;	nCe=12(44.4%)	new_controls=2	species=23
+cluster_nr=12446	members=27	centroid=obelisk_zheludev|._cluster=Cluster_004094_000001_000001:orf5:code1:822-1523/871(-1)	groups=obelisk_zheludev:24;ROD:3;	new_controls=3	species=21
+cluster_nr=12456	members=27	centroid=ROD|SRR6214764_23765_circle_23765:orf4:code1:75-737/771(-1)	groups=obelisk_zheludev:21;ROD:6;	new_controls=6	species=15
+cluster_nr=12461	members=27	centroid=obelisk_zheludev|._cluster=Cluster_003579_000002_000001:orf3:code1:682-1302/886(-1)	groups=obelisk_zheludev:24;ROD:3;	new_controls=3	species=22
+cluster_nr=13215	members=27	centroid=ROD|SRR10179595_8482_circle_8482:orf7:code1:1060-1695/1086(-3)	groups=obelisk_zheludev:8;ROD:19;	new_controls=19	species=6
+cluster_nr=13273	members=26	centroid=humancirc_gb260921|hsa-UBA6_0096:orf1:code1:25-1752/1752(+1)Ce	groups=humancirc_gb260921:25;ROD:1;	nCe=10(38.5%)	nCem=5(19.2%)	new_controls=1	species=24
+cluster_nr=13308	members=26	centroid=humancirc_gb260921|hsa-STRN3_0005:orf2:code1:692-1561/706(+1)	groups=humancirc_gb260921:25;ROD:1;	nCe=2(7.7%)	nCem=3(11.5%)	new_controls=1	species=25
+cluster_nr=13325	members=26	centroid=ROD|SRR14039706_46275_circle_46275:orf2:code1:485-1219/1232(-1)	groups=obelisk_zheludev:12;ROD:14;	new_controls=14	species=11
+cluster_nr=13941	members=26	centroid=obelisk_zheludev|._cluster=Cluster_004726_000002_000001:orf4:code1:90-905/739(-1)	groups=obelisk_zheludev:24;ROD:2;	new_controls=2	species=19
+cluster_nr=14129	members=26	centroid=ROD|SRR18336213_60256_circle_60256:orf2:code1:212-745/1270(-1)	groups=obelisk_zheludev:2;ROD:24;	new_controls=24	species=2
+cluster_nr=14277	members=25	centroid=humancirc_gb260921|hsa-ATP2B4_0012:orf1:code1:166-1467/1467(+1)Ce	groups=humancirc_gb260921:24;ROD:1;	nCe=14(56.0%)	nCem=1(4.0%)	new_controls=1	species=25
+cluster_nr=14285	members=25	centroid=humancirc_gb260921|hsa-CSNK2A1_0006:orf3:code1:110-1282/1318(+1)	groups=humancirc_gb260921:24;ROD:1;	nCe=5(20.0%)	nCem=2(8.0%)	new_controls=1	species=23
+cluster_nr=14316	members=25	centroid=obelisk_zheludev|._cluster=Cluster_003429_000005_000001:orf2:code1:837-1571/880(-1)	groups=obelisk_zheludev:17;ROD:8;	new_controls=8	species=3
+cluster_nr=14330	members=25	centroid=ROD|SRR22936753_134886_circle_134886:orf5:code1:1046-1675/1153(-1)	groups=obelisk_zheludev:17;ROD:8;	new_controls=8	species=11
+cluster_nr=14333	members=25	centroid=obelisk_zheludev|._cluster=Cluster_002091_000002_000001:orf7:code1:798-1415/1015(-1)	groups=obelisk_zheludev:23;ROD:2;	new_controls=2	species=21
+cluster_nr=14989	members=25	centroid=ROD|SRR6425408_109991_circle_109991:orf1:code1:268-897/966(+1)	groups=obelisk_zheludev:10;ROD:15;	new_controls=15	species=2
+cluster_nr=15303	members=24	centroid=humancirc_gb260921|hsa-OBSCN_0125:orf4:code1:159-1955/1953(+3)Ce	groups=humancirc_gb260921:23;ROD:1;	nCe=20(83.3%)	nCem=2(8.3%)	new_controls=1	species=19
+cluster_nr=15342	members=24	centroid=obelisk_zheludev|._cluster=Cluster_004674_000001_000001:orf1:code1:793-1608/830(+1)	groups=obelisk_zheludev:18;ROD:6;	new_controls=6	species=18
+cluster_nr=15362	members=24	centroid=obelisk_zheludev|._cluster=Cluster_003061_000002_000002:orf2:code1:33-743/826(+1)	groups=obelisk_zheludev:23;ROD:1;	new_controls=1	species=20
+cluster_nr=1	members=9131	centroid=hepadnavirus_gb260921|PX810232.1:orf1:code1:184-2889/3075(+1)	groups=hepadnavirus_gb260921:9131;	nCe=13(0.1%)	nCem=1(0.0%)	species=155
+cluster_nr=2	members=3138	centroid=hepadnavirus_gb260921|KJ598758.1:orf6:code1:2054-4201/2581(+1)	groups=hepadnavirus_gb260921:3138;	nCe=1(0.0%)	species=45
+cluster_nr=3	members=1401	centroid=geminivirus_gb260921|HG530540.1:orf17:code1:108-1448/2780(-1)	groups=geminivirus_gb260921:1401;	species=232
+cluster_nr=4	members=1335	centroid=circovirus_gb260921|MN258753.1:orf6:code1:1653-2759/1767(+3)	groups=circovirus_gb260921:1335;	species=10
+cluster_nr=7	members=1024	centroid=avsunviroid_gb260921|KF869025.1:orf1:code1:54-149/338(+1)	groups=avsunviroid_gb260921:1024;	species=1
+cluster_nr=8	members=994	centroid=geminivirus_gb260921|MW795668.1:orf7:code1:2736-3941/2748(-1)	groups=geminivirus_gb260921:994;	species=104
+cluster_nr=10	members=881	centroid=circovirus_gb260921|MZ667324.1:orf3:code1:51-992/1767(+3)	groups=circovirus_gb260921:881;	species=1
+cluster_nr=11	members=839	centroid=avsunviroid_gb260921|KF867896.1:orf1:code1:54-143/324(+3)	groups=avsunviroid_gb260921:839;	species=1
+cluster_nr=15	members=701	centroid=geminivirus_gb260921|KY559595.1:orf13:code1:2178-3059/2576(-1)	groups=geminivirus_gb260921:701;	species=238
+cluster_nr=18	members=592	centroid=circovirus_gb260921|MZ995485.1:orf3:code1:51-992/1767(+3)	groups=circovirus_gb260921:592;	species=1
+cluster_nr=19	members=583	centroid=geminivirus_gb260921|MG930476.1:orf10:code1:195-1136/2652(-1)	groups=geminivirus_gb260921:583;	species=31
+cluster_nr=22	members=550	centroid=geminivirus_gb260921|MT433965.1:orf11:code1:2602-3702/2756(-1)	groups=geminivirus_gb260921:550;	species=25
+cluster_nr=23	members=540	centroid=geminivirus_gb260921|HQ588899.1:orf12:code1:2563-3723/2633(-1)	groups=geminivirus_gb260921:540;	species=142
+cluster_nr=25	members=475	centroid=geminivirus_gb260921|KY311941.1:orf16:code1:2378-3193/2689(-1)	groups=geminivirus_gb260921:475;	species=9
+cluster_nr=30	members=447	centroid=avsunviroid_gb260921|KF866928.1:orf1:code1:54-143/336(+3)	groups=avsunviroid_gb260921:447;	species=1
+cluster_nr=31	members=445	centroid=circovirus_gb260921|OR999212.1:orf5:code1:1942-3036/2038(+1)	groups=circovirus_gb260921:445;	species=20
+cluster_nr=37	members=429	centroid=geminivirus_gb260921|GU112065.1:orf11:code1:2729-3955/2741(-1)	groups=geminivirus_gb260921:429;	species=99
+cluster_nr=42	members=414	centroid=anellovirus_gb260921|OL448844.1:orf1:code1:832-2211/2298(+1)	groups=anellovirus_gb260921:414;	species=5
+cluster_nr=45	members=396	centroid=geminivirus_gb260921|MT161669.1:orf16:code1:2571-3746/2584(-1)	groups=geminivirus_gb260921:396;	species=45
+cluster_nr=46	members=384	centroid=geminivirus_gb260921|KX259341.1:orf16:code1:2347-3351/2682(-3)	groups=geminivirus_gb260921:384;	species=62
+cluster_nr=50	members=379	centroid=papillomavirus_gb260921|MT217920.1:orf17:code1:507-2723/7764(+3)	groups=papillomavirus_gb260921:379;	species=2
+cluster_nr=51	members=364	centroid=circovirus_gb260921|PX661877.1:orf11:code1:1987-2628/2000(-1)	groups=circovirus_gb260921:364;	species=1
+cluster_nr=57	members=336	centroid=circovirus_gb260921|MG250182.1:orf10:code1:1980-2621/2000(-1)	groups=circovirus_gb260921:336;	species=2
+cluster_nr=58	members=335	centroid=circovirus_gb260921|KF768548.1:orf1:code1:82-1002/1996(+1)	groups=circovirus_gb260921:335;	species=27
+cluster_nr=66	members=312	centroid=circovirus_gb260921|MZ747116.1:orf6:code1:51-992/1767(+3)	groups=circovirus_gb260921:312;	species=1
+cluster_nr=72	members=299	centroid=geminivirus_gb260921|MG764703.1:orf6:code1:2464-3399/2611(-1)	groups=geminivirus_gb260921:299;	species=62
+cluster_nr=73	members=296	centroid=polyomavirus_gb260921|AB081009.1:orf20:code1:4318-6051/5108(-1)	groups=polyomavirus_gb260921:296;	species=3
+cluster_nr=80	members=287	centroid=circovirus_gb260921|KT808667.1:orf6:code1:1763-2773/1822(+1)	groups=circovirus_gb260921:287;	species=16
+cluster_nr=88	members=269	centroid=circovirus_gb260921|KY388486.1:orf4:code1:1911-2972/2063(+1)	groups=circovirus_gb260921:269;	species=7
+cluster_nr=91	members=267	centroid=geminivirus_gb260921|LC721738.1:orf11:code1:2606-3679/2781(-2)	groups=geminivirus_gb260921:267;	species=8
+cluster_nr=122	members=241	centroid=geminivirus_gb260921|KM229769.1:orf10:code1:2389-3375/2573(-1)	groups=geminivirus_gb260921:241;	species=14
+cluster_nr=126	members=238	centroid=geminivirus_gb260921|DQ400847.1:orf21:code1:2625-4031/2744(-1)	groups=geminivirus_gb260921:238;	species=4
+cluster_nr=137	members=231	centroid=papillomavirus_gb260921|PV418777.1:orf18:code1:914-2842/7858(+1)	groups=papillomavirus_gb260921:231;
+cluster_nr=151	members=219	centroid=circovirus_gb260921|OR134465.1:orf1:code1:49-924/1993(+1)	groups=circovirus_gb260921:219;	species=2
+cluster_nr=156	members=216	centroid=geminivirus_gb260921|JF909073.1:orf16:code1:2644-3720/2801(-1)	groups=geminivirus_gb260921:216;	species=11
+cluster_nr=162	members=209	centroid=geminivirus_gb260921|JN419022.1:orf18:code1:2485-3567/2658(-3)	groups=geminivirus_gb260921:209;	species=24
+cluster_nr=175	members=201	centroid=papillomavirus_gb260921|PV051140.1:orf10:code1:843-2789/7906(+1)	groups=papillomavirus_gb260921:201;
+cluster_nr=178	members=199	centroid=geminivirus_gb260921|KX302713.1:orf15:code1:2674-3810/2763(-3)	groups=geminivirus_gb260921:199;	species=44
+cluster_nr=190	members=192	centroid=nanovirus_gb260921|KM607670.1:orf3:code1:1070-2053/1110(+2)	groups=nanovirus_gb260921:192;	nCe=5(2.6%)	species=10
+cluster_nr=191	members=192	centroid=geminivirus_gb260921|OK431080.1:orf12:code1:2118-3011/2654(-1)	groups=geminivirus_gb260921:192;	species=15
+cluster_nr=203	members=186	centroid=plasmidsub7000_gb260921|NZ_CP130093.1:orf12:code1:3695-5320/4694(+1)	groups=plasmidsub7000_gb260921:186;	nCe=1(0.5%)	species=20
+cluster_nr=205	members=185	centroid=hepadnavirus_gb260921|PZ343881.1:orf3:code1:20-2533/3027(+2)	groups=hepadnavirus_gb260921:185;	species=6
+cluster_nr=213	members=183	centroid=pospiviroid_gb260921|MW312554.1:orf1:code1:2-361/360(+2)Cem	groups=pospiviroid_gb260921:183;	nCe=1(0.5%)	nCem=176(96.2%)	species=1
+cluster_nr=226	members=180	centroid=geminivirus_gb260921|AJ704942.1:orf12:code1:2344-3417/2747(-1)	groups=geminivirus_gb260921:180;	species=16
+cluster_nr=231	members=179	centroid=pospiviroid_gb260921|ON669220.1:orf2:code1:25-618/298(-1)	groups=pospiviroid_gb260921:179;	nCe=14(7.8%)	nCem=57(31.8%)	species=4
+cluster_nr=235	members=178	centroid=geminivirus_gb260921|KJ887617.1:orf14:code1:2112-3005/2723(-1)	groups=geminivirus_gb260921:178;	species=8
+cluster_nr=245	members=174	centroid=hepadnavirus_gb260921|KY689477.1:orf1:code1:1-636/636(+1)Ce	groups=hepadnavirus_gb260921:174;	nCe=68(39.1%)	species=43
+cluster_nr=259	members=171	centroid=plasmidsub7000_gb260921|NZ_CP142284.1:orf6:code1:551-2113/4328(+1)	groups=plasmidsub7000_gb260921:171;	species=54
+cluster_nr=271	members=169	centroid=polyomavirus_gb260921|AY628226.1:orf18:code1:4467-6221/5141(-1)	groups=polyomavirus_gb260921:169;	species=1
+cluster_nr=274	members=168	centroid=plasmidsub7000_gb260921|NZ_CP050341.1:orf6:code1:5560-7143/5596(+1)	groups=plasmidsub7000_gb260921:168;
+cluster_nr=275	members=167	centroid=papillomavirus_gb260921|PP781985.1:orf9:code1:914-2884/7857(+2)	groups=papillomavirus_gb260921:167;	species=2
+cluster_nr=283	members=165	centroid=satellite_gb260921|LC223513.1:orf4:code1:834-1544/836(+1)	groups=satellite_gb260921:165;	species=2
+cluster_nr=344	members=154	centroid=circovirus_gb260921|MK178320.1:orf11:code1:1987-2628/2000(-1)	groups=circovirus_gb260921:154;	species=1
+cluster_nr=345	members=154	centroid=circovirus_gb260921|MF616414.1:orf4:code1:51-992/1767(+3)	groups=circovirus_gb260921:154;	species=1
+cluster_nr=382	members=146	centroid=geminivirus_gb260921|HF968633.1:orf14:code1:2512-3303/2751(-3)	groups=geminivirus_gb260921:146;	species=10
+cluster_nr=387	members=146	centroid=avsunviroid_gb260921|KF869669.1:orf2:code1:32-268/337(-1)	groups=avsunviroid_gb260921:146;	species=3
+cluster_nr=398	members=144	centroid=nanovirus_gb260921|MT433351.1:orf2:code1:149-706/1014(+2)	groups=nanovirus_gb260921:144;	species=4
+cluster_nr=437	members=139	centroid=polyomavirus_gb260921|KT896350.1:orf20:code1:4470-6224/5144(-1)	groups=polyomavirus_gb260921:139;
+cluster_nr=441	members=137	centroid=nanovirus_gb260921|KM607520.1:orf1:code1:170-721/1058(+1)	groups=nanovirus_gb260921:137;	nCe=2(1.5%)	species=10
+cluster_nr=445	members=136	centroid=plasmidsub7000_gb260921|NZ_CP047534.1:orf2:code1:910-3066/4074(+1)	groups=plasmidsub7000_gb260921:136;	nCe=2(1.5%)	species=10
+cluster_nr=463	members=134	centroid=geminivirus_gb260921|KC253234.1:orf17:code1:2730-3884/2828(-1)	groups=geminivirus_gb260921:134;	species=31
+cluster_nr=474	members=134	centroid=plasmidsub7000_gb260921|NZ_CP148504.1:orf8:code1:1080-2042/2089(-1)	groups=plasmidsub7000_gb260921:134;	species=4
+cluster_nr=478	members=133	centroid=ribozyvirus_gb260921|HQ005371.1:orf10:code1:1372-1956/1679(-1)	groups=ribozyvirus_gb260921:133;	species=38
+cluster_nr=486	members=132	centroid=anellovirus_gb260921|MZ286073.1:orf4:code1:390-2747/3400(+1)	groups=anellovirus_gb260921:132;	nCe=1(0.8%)	species=76
+cluster_nr=582	members=123	centroid=hepadnavirus_gb260921|EU678474.1:orf7:code1:2307-4052/3214(+1)	groups=hepadnavirus_gb260921:123;	nCe=6(4.9%)	species=33
+cluster_nr=630	members=120	centroid=papillomavirus_gb260921|OP751585.1:orf2:code1:865-2811/7908(+1)	groups=papillomavirus_gb260921:120;
+cluster_nr=631	members=120	centroid=papillomavirus_gb260921|AB818691.1:orf2:code1:865-2811/7906(+1)	groups=papillomavirus_gb260921:120;
+cluster_nr=682	members=115	centroid=geminivirus_gb260921|OP748233.1:orf17:code1:2901-4025/2924(-1)	groups=geminivirus_gb260921:115;	species=10
+cluster_nr=715	members=113	centroid=plasmidsub7000_gb260921|OW849122.1:orf6:code1:1761-2069/2495(+1)	groups=plasmidsub7000_gb260921:113;	species=1
+cluster_nr=733	members=111	centroid=nanovirus_gb260921|KM607748.1:orf2:code1:128-391/1059(+2)	groups=nanovirus_gb260921:111;	species=4
+cluster_nr=738	members=110	centroid=polyomavirus_gb260921|AB103387.1:orf26:code1:4328-6061/5119(-1)	groups=polyomavirus_gb260921:110;
+cluster_nr=739	members=110	centroid=anellovirus_gb260921|PV941947.1:orf5:code1:953-2332/2376(+2)	groups=anellovirus_gb260921:110;	species=3
+cluster_nr=843	members=105	centroid=plasmidsub7000_gb260921|OX291692.1:orf8:code1:917-2458/3223(+1)	groups=plasmidsub7000_gb260921:105;	species=1
+cluster_nr=863	members=103	centroid=anellovirus_gb260921|PP856735.1:orf1:code1:1-2220/2223(+1)	groups=anellovirus_gb260921:103;	nCe=1(1.0%)	species=45
+cluster_nr=890	members=103	centroid=geminivirus_gb260921|OM715159.1:orf14:code1:1993-2850/2737(-1)	groups=geminivirus_gb260921:103;	species=1
+cluster_nr=911	members=102	centroid=plasmidsub7000_gb260921|CP112985.1:orf1:code1:1-474/1546(+1)	groups=plasmidsub7000_gb260921:102;	species=6
+cluster_nr=936	members=100	centroid=papillomavirus_gb260921|MZ374370.1:orf8:code1:864-2804/7936(+1)	groups=papillomavirus_gb260921:100;
+cluster_nr=961	members=99	centroid=geminivirus_gb260921|MW650813.1:orf12:code1:2467-3387/2779(-1)	groups=geminivirus_gb260921:99;	species=7
+cluster_nr=1006	members=97	centroid=nanovirus_gb260921|AY494788.1:orf3:code1:282-632/1045(+1)	groups=nanovirus_gb260921:97;	species=8
+cluster_nr=1019	members=97	centroid=circovirus_gb260921|HQ591377.1:orf5:code1:51-992/1767(+3)	groups=circovirus_gb260921:97;	species=1
+cluster_nr=1020	members=96	centroid=papillomavirus_gb260921|MZ617425.1:orf10:code1:731-2677/8031(+2)	groups=papillomavirus_gb260921:96;	species=2
+cluster_nr=1027	members=96	centroid=avsunviroid_gb260921|OP918845.1:orf2:code1:104-499/398(-1)	groups=avsunviroid_gb260921:96;	species=2
+cluster_nr=1044	members=95	centroid=anellovirus_gb260921|PP857016.1:orf1:code1:1-2301/2304(+1)	groups=anellovirus_gb260921:95;	species=40
+cluster_nr=1065	members=95	centroid=polyomavirus_gb260921|AB263912.1:orf20:code1:4359-6113/5141(-1)	groups=polyomavirus_gb260921:95;
+cluster_nr=1067	members=94	centroid=humancirc_gb260921|hsa-ANKRD36_0221:orf3:code1:1883-3886/1903(+1)	groups=humancirc_gb260921:94;	nCe=11(11.7%)	nCem=58(61.7%)	species=52
+cluster_nr=1068	members=94	centroid=anellovirus_gb260921|PP816453.1:orf8:code1:662-2605/3394(+1)	groups=anellovirus_gb260921:94;	species=53
+cluster_nr=1071	members=94	centroid=ribozyvirus_gb260921|OM169249.1:orf10:code1:45-815/1680(-1)	groups=ribozyvirus_gb260921:94;	species=24
+cluster_nr=1089	members=94	centroid=papillomavirus_gb260921|MZ617445.1:orf10:code1:731-2677/8031(+2)	groups=papillomavirus_gb260921:94;
+cluster_nr=1112	members=92	centroid=hepadnavirus_gb260921|PQ480065.1:orf6:code1:2155-4668/3187(+1)	groups=hepadnavirus_gb260921:92;	nCe=2(2.2%)	species=8
+cluster_nr=1116	members=92	centroid=nanovirus_gb260921|PP237610.1:orf3:code1:1026-1490/1070(+1)	groups=nanovirus_gb260921:92;	species=3
+cluster_nr=1126	members=92	centroid=papillomavirus_gb260921|MT217324.1:orf2:code1:868-2778/7879(+1)	groups=papillomavirus_gb260921:92;
+cluster_nr=1159	members=90	centroid=anellovirus_gb260921|MZ285995.1:orf8:code1:435-2735/3006(+3)	groups=anellovirus_gb260921:90;	nCe=1(1.1%)	species=47
+cluster_nr=1202	members=89	centroid=geminivirus_gb260921|KX024643.1:orf12:code1:2615-3685/2781(-2)	groups=geminivirus_gb260921:89;	species=1
+cluster_nr=1233	members=88	centroid=geminivirus_gb260921|GQ268223.1:orf5:code1:1202-2302/1356(-2)	groups=geminivirus_gb260921:88;	species=17
+cluster_nr=1234	members=88	centroid=geminivirus_gb260921|JQ647487.1:orf14:code1:2511-3302/2750(-1)	groups=geminivirus_gb260921:88;	species=1
+cluster_nr=1237	members=88	centroid=papillomavirus_gb260921|PV418822.1:orf19:code1:914-2842/7858(+1)	groups=papillomavirus_gb260921:88;
+cluster_nr=1263	members=87	centroid=plasmidsub7000_gb260921|NZ_CP032428.1:orf3:code1:2503-3369/4305(+1)	groups=plasmidsub7000_gb260921:87;	species=1
+cluster_nr=1270	members=86	centroid=nanovirus_gb260921|FJ859735.1:orf3:code1:213-737/1075(+1)	groups=nanovirus_gb260921:86;	species=1
+cluster_nr=1287	members=86	centroid=papillomavirus_gb260921|PV419172.1:orf19:code1:914-2842/7858(+1)	groups=papillomavirus_gb260921:86;
+cluster_nr=1307	members=85	centroid=pospiviroid_gb260921|KC584015.1:orf1:code1:229-528/302(-1)	groups=pospiviroid_gb260921:85;	nCe=23(27.1%)	species=6

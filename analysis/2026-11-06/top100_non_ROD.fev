@@ -1,0 +1,100 @@
+cluster_nr=1	members=9131	centroid=hepadnavirus_gb260921|PX810232.1:orf1:code1:184-2889/3075(+1)	groups=hepadnavirus_gb260921:9131;	nCe=13(0.1%)	nCem=1(0.0%)
+cluster_nr=2	members=3138	centroid=hepadnavirus_gb260921|KJ598758.1:orf6:code1:2054-4201/2581(+1)	groups=hepadnavirus_gb260921:3138;	nCe=1(0.0%)
+cluster_nr=3	members=1401	centroid=geminivirus_gb260921|HG530540.1:orf17:code1:108-1448/2780(-1)	groups=geminivirus_gb260921:1401;
+cluster_nr=4	members=1335	centroid=circovirus_gb260921|MN258753.1:orf6:code1:1653-2759/1767(+3)	groups=circovirus_gb260921:1335;
+cluster_nr=7	members=1024	centroid=avsunviroid_gb260921|KF869025.1:orf1:code1:54-149/338(+1)	groups=avsunviroid_gb260921:1024;
+cluster_nr=8	members=994	centroid=geminivirus_gb260921|MW795668.1:orf7:code1:2736-3941/2748(-1)	groups=geminivirus_gb260921:994;
+cluster_nr=10	members=881	centroid=circovirus_gb260921|MZ667324.1:orf3:code1:51-992/1767(+3)	groups=circovirus_gb260921:881;
+cluster_nr=11	members=839	centroid=avsunviroid_gb260921|KF867896.1:orf1:code1:54-143/324(+3)	groups=avsunviroid_gb260921:839;
+cluster_nr=15	members=701	centroid=geminivirus_gb260921|KY559595.1:orf13:code1:2178-3059/2576(-1)	groups=geminivirus_gb260921:701;
+cluster_nr=18	members=592	centroid=circovirus_gb260921|MZ995485.1:orf3:code1:51-992/1767(+3)	groups=circovirus_gb260921:592;
+cluster_nr=19	members=583	centroid=geminivirus_gb260921|MG930476.1:orf10:code1:195-1136/2652(-1)	groups=geminivirus_gb260921:583;
+cluster_nr=22	members=550	centroid=geminivirus_gb260921|MT433965.1:orf11:code1:2602-3702/2756(-1)	groups=geminivirus_gb260921:550;
+cluster_nr=23	members=540	centroid=geminivirus_gb260921|HQ588899.1:orf12:code1:2563-3723/2633(-1)	groups=geminivirus_gb260921:540;
+cluster_nr=25	members=475	centroid=geminivirus_gb260921|KY311941.1:orf16:code1:2378-3193/2689(-1)	groups=geminivirus_gb260921:475;
+cluster_nr=30	members=447	centroid=avsunviroid_gb260921|KF866928.1:orf1:code1:54-143/336(+3)	groups=avsunviroid_gb260921:447;
+cluster_nr=31	members=445	centroid=circovirus_gb260921|OR999212.1:orf5:code1:1942-3036/2038(+1)	groups=circovirus_gb260921:445;
+cluster_nr=37	members=429	centroid=geminivirus_gb260921|GU112065.1:orf11:code1:2729-3955/2741(-1)	groups=geminivirus_gb260921:429;
+cluster_nr=42	members=414	centroid=anellovirus_gb260921|OL448844.1:orf1:code1:832-2211/2298(+1)	groups=anellovirus_gb260921:414;
+cluster_nr=45	members=396	centroid=geminivirus_gb260921|MT161669.1:orf16:code1:2571-3746/2584(-1)	groups=geminivirus_gb260921:396;
+cluster_nr=46	members=384	centroid=geminivirus_gb260921|KX259341.1:orf16:code1:2347-3351/2682(-3)	groups=geminivirus_gb260921:384;
+cluster_nr=50	members=379	centroid=papillomavirus_gb260921|MT217920.1:orf17:code1:507-2723/7764(+3)	groups=papillomavirus_gb260921:379;
+cluster_nr=51	members=364	centroid=circovirus_gb260921|PX661877.1:orf11:code1:1987-2628/2000(-1)	groups=circovirus_gb260921:364;
+cluster_nr=57	members=336	centroid=circovirus_gb260921|MG250182.1:orf10:code1:1980-2621/2000(-1)	groups=circovirus_gb260921:336;
+cluster_nr=58	members=335	centroid=circovirus_gb260921|KF768548.1:orf1:code1:82-1002/1996(+1)	groups=circovirus_gb260921:335;
+cluster_nr=66	members=312	centroid=circovirus_gb260921|MZ747116.1:orf6:code1:51-992/1767(+3)	groups=circovirus_gb260921:312;
+cluster_nr=72	members=299	centroid=geminivirus_gb260921|MG764703.1:orf6:code1:2464-3399/2611(-1)	groups=geminivirus_gb260921:299;
+cluster_nr=73	members=296	centroid=polyomavirus_gb260921|AB081009.1:orf20:code1:4318-6051/5108(-1)	groups=polyomavirus_gb260921:296;
+cluster_nr=80	members=287	centroid=circovirus_gb260921|KT808667.1:orf6:code1:1763-2773/1822(+1)	groups=circovirus_gb260921:287;
+cluster_nr=88	members=269	centroid=circovirus_gb260921|KY388486.1:orf4:code1:1911-2972/2063(+1)	groups=circovirus_gb260921:269;
+cluster_nr=91	members=267	centroid=geminivirus_gb260921|LC721738.1:orf11:code1:2606-3679/2781(-2)	groups=geminivirus_gb260921:267;
+cluster_nr=122	members=241	centroid=geminivirus_gb260921|KM229769.1:orf10:code1:2389-3375/2573(-1)	groups=geminivirus_gb260921:241;
+cluster_nr=126	members=238	centroid=geminivirus_gb260921|DQ400847.1:orf21:code1:2625-4031/2744(-1)	groups=geminivirus_gb260921:238;
+cluster_nr=137	members=231	centroid=papillomavirus_gb260921|PV418777.1:orf18:code1:914-2842/7858(+1)	groups=papillomavirus_gb260921:231;
+cluster_nr=151	members=219	centroid=circovirus_gb260921|OR134465.1:orf1:code1:49-924/1993(+1)	groups=circovirus_gb260921:219;
+cluster_nr=156	members=216	centroid=geminivirus_gb260921|JF909073.1:orf16:code1:2644-3720/2801(-1)	groups=geminivirus_gb260921:216;
+cluster_nr=162	members=209	centroid=geminivirus_gb260921|JN419022.1:orf18:code1:2485-3567/2658(-3)	groups=geminivirus_gb260921:209;
+cluster_nr=175	members=201	centroid=papillomavirus_gb260921|PV051140.1:orf10:code1:843-2789/7906(+1)	groups=papillomavirus_gb260921:201;
+cluster_nr=178	members=199	centroid=geminivirus_gb260921|KX302713.1:orf15:code1:2674-3810/2763(-3)	groups=geminivirus_gb260921:199;
+cluster_nr=190	members=192	centroid=nanovirus_gb260921|KM607670.1:orf3:code1:1070-2053/1110(+2)	groups=nanovirus_gb260921:192;	nCe=5(2.6%)
+cluster_nr=191	members=192	centroid=geminivirus_gb260921|OK431080.1:orf12:code1:2118-3011/2654(-1)	groups=geminivirus_gb260921:192;
+cluster_nr=203	members=186	centroid=plasmidsub7000_gb260921|NZ_CP130093.1:orf12:code1:3695-5320/4694(+1)	groups=plasmidsub7000_gb260921:186;	nCe=1(0.5%)
+cluster_nr=205	members=185	centroid=hepadnavirus_gb260921|PZ343881.1:orf3:code1:20-2533/3027(+2)	groups=hepadnavirus_gb260921:185;
+cluster_nr=213	members=183	centroid=pospiviroid_gb260921|MW312554.1:orf1:code1:2-361/360(+2)Cem	groups=pospiviroid_gb260921:183;	nCe=1(0.5%)	nCem=176(96.2%)
+cluster_nr=226	members=180	centroid=geminivirus_gb260921|AJ704942.1:orf12:code1:2344-3417/2747(-1)	groups=geminivirus_gb260921:180;
+cluster_nr=231	members=179	centroid=pospiviroid_gb260921|ON669220.1:orf2:code1:25-618/298(-1)	groups=pospiviroid_gb260921:179;	nCe=14(7.8%)	nCem=57(31.8%)
+cluster_nr=235	members=178	centroid=geminivirus_gb260921|KJ887617.1:orf14:code1:2112-3005/2723(-1)	groups=geminivirus_gb260921:178;
+cluster_nr=245	members=174	centroid=hepadnavirus_gb260921|KY689477.1:orf1:code1:1-636/636(+1)Ce	groups=hepadnavirus_gb260921:174;	nCe=68(39.1%)
+cluster_nr=259	members=171	centroid=plasmidsub7000_gb260921|NZ_CP142284.1:orf6:code1:551-2113/4328(+1)	groups=plasmidsub7000_gb260921:171;
+cluster_nr=271	members=169	centroid=polyomavirus_gb260921|AY628226.1:orf18:code1:4467-6221/5141(-1)	groups=polyomavirus_gb260921:169;
+cluster_nr=274	members=168	centroid=plasmidsub7000_gb260921|NZ_CP050341.1:orf6:code1:5560-7143/5596(+1)	groups=plasmidsub7000_gb260921:168;
+cluster_nr=275	members=167	centroid=papillomavirus_gb260921|PP781985.1:orf9:code1:914-2884/7857(+2)	groups=papillomavirus_gb260921:167;
+cluster_nr=283	members=165	centroid=satellite_gb260921|LC223513.1:orf4:code1:834-1544/836(+1)	groups=satellite_gb260921:165;
+cluster_nr=344	members=154	centroid=circovirus_gb260921|MK178320.1:orf11:code1:1987-2628/2000(-1)	groups=circovirus_gb260921:154;
+cluster_nr=345	members=154	centroid=circovirus_gb260921|MF616414.1:orf4:code1:51-992/1767(+3)	groups=circovirus_gb260921:154;
+cluster_nr=382	members=146	centroid=geminivirus_gb260921|HF968633.1:orf14:code1:2512-3303/2751(-3)	groups=geminivirus_gb260921:146;
+cluster_nr=387	members=146	centroid=avsunviroid_gb260921|KF869669.1:orf2:code1:32-268/337(-1)	groups=avsunviroid_gb260921:146;
+cluster_nr=398	members=144	centroid=nanovirus_gb260921|MT433351.1:orf2:code1:149-706/1014(+2)	groups=nanovirus_gb260921:144;
+cluster_nr=437	members=139	centroid=polyomavirus_gb260921|KT896350.1:orf20:code1:4470-6224/5144(-1)	groups=polyomavirus_gb260921:139;
+cluster_nr=441	members=137	centroid=nanovirus_gb260921|KM607520.1:orf1:code1:170-721/1058(+1)	groups=nanovirus_gb260921:137;	nCe=2(1.5%)
+cluster_nr=445	members=136	centroid=plasmidsub7000_gb260921|NZ_CP047534.1:orf2:code1:910-3066/4074(+1)	groups=plasmidsub7000_gb260921:136;	nCe=2(1.5%)
+cluster_nr=463	members=134	centroid=geminivirus_gb260921|KC253234.1:orf17:code1:2730-3884/2828(-1)	groups=geminivirus_gb260921:134;
+cluster_nr=474	members=134	centroid=plasmidsub7000_gb260921|NZ_CP148504.1:orf8:code1:1080-2042/2089(-1)	groups=plasmidsub7000_gb260921:134;
+cluster_nr=478	members=133	centroid=ribozyvirus_gb260921|HQ005371.1:orf10:code1:1372-1956/1679(-1)	groups=ribozyvirus_gb260921:133;
+cluster_nr=486	members=132	centroid=anellovirus_gb260921|MZ286073.1:orf4:code1:390-2747/3400(+1)	groups=anellovirus_gb260921:132;	nCe=1(0.8%)
+cluster_nr=582	members=123	centroid=hepadnavirus_gb260921|EU678474.1:orf7:code1:2307-4052/3214(+1)	groups=hepadnavirus_gb260921:123;	nCe=6(4.9%)
+cluster_nr=630	members=120	centroid=papillomavirus_gb260921|OP751585.1:orf2:code1:865-2811/7908(+1)	groups=papillomavirus_gb260921:120;
+cluster_nr=631	members=120	centroid=papillomavirus_gb260921|AB818691.1:orf2:code1:865-2811/7906(+1)	groups=papillomavirus_gb260921:120;
+cluster_nr=682	members=115	centroid=geminivirus_gb260921|OP748233.1:orf17:code1:2901-4025/2924(-1)	groups=geminivirus_gb260921:115;
+cluster_nr=715	members=113	centroid=plasmidsub7000_gb260921|OW849122.1:orf6:code1:1761-2069/2495(+1)	groups=plasmidsub7000_gb260921:113;
+cluster_nr=733	members=111	centroid=nanovirus_gb260921|KM607748.1:orf2:code1:128-391/1059(+2)	groups=nanovirus_gb260921:111;
+cluster_nr=738	members=110	centroid=polyomavirus_gb260921|AB103387.1:orf26:code1:4328-6061/5119(-1)	groups=polyomavirus_gb260921:110;
+cluster_nr=739	members=110	centroid=anellovirus_gb260921|PV941947.1:orf5:code1:953-2332/2376(+2)	groups=anellovirus_gb260921:110;
+cluster_nr=843	members=105	centroid=plasmidsub7000_gb260921|OX291692.1:orf8:code1:917-2458/3223(+1)	groups=plasmidsub7000_gb260921:105;
+cluster_nr=863	members=103	centroid=anellovirus_gb260921|PP856735.1:orf1:code1:1-2220/2223(+1)	groups=anellovirus_gb260921:103;	nCe=1(1.0%)
+cluster_nr=890	members=103	centroid=geminivirus_gb260921|OM715159.1:orf14:code1:1993-2850/2737(-1)	groups=geminivirus_gb260921:103;
+cluster_nr=911	members=102	centroid=plasmidsub7000_gb260921|CP112985.1:orf1:code1:1-474/1546(+1)	groups=plasmidsub7000_gb260921:102;
+cluster_nr=936	members=100	centroid=papillomavirus_gb260921|MZ374370.1:orf8:code1:864-2804/7936(+1)	groups=papillomavirus_gb260921:100;
+cluster_nr=961	members=99	centroid=geminivirus_gb260921|MW650813.1:orf12:code1:2467-3387/2779(-1)	groups=geminivirus_gb260921:99;
+cluster_nr=1006	members=97	centroid=nanovirus_gb260921|AY494788.1:orf3:code1:282-632/1045(+1)	groups=nanovirus_gb260921:97;
+cluster_nr=1019	members=97	centroid=circovirus_gb260921|HQ591377.1:orf5:code1:51-992/1767(+3)	groups=circovirus_gb260921:97;
+cluster_nr=1020	members=96	centroid=papillomavirus_gb260921|MZ617425.1:orf10:code1:731-2677/8031(+2)	groups=papillomavirus_gb260921:96;
+cluster_nr=1027	members=96	centroid=avsunviroid_gb260921|OP918845.1:orf2:code1:104-499/398(-1)	groups=avsunviroid_gb260921:96;
+cluster_nr=1044	members=95	centroid=anellovirus_gb260921|PP857016.1:orf1:code1:1-2301/2304(+1)	groups=anellovirus_gb260921:95;
+cluster_nr=1065	members=95	centroid=polyomavirus_gb260921|AB263912.1:orf20:code1:4359-6113/5141(-1)	groups=polyomavirus_gb260921:95;
+cluster_nr=1067	members=94	centroid=humancirc_gb260921|hsa-ANKRD36_0221:orf3:code1:1883-3886/1903(+1)	groups=humancirc_gb260921:94;	nCe=11(11.7%)	nCem=58(61.7%)
+cluster_nr=1068	members=94	centroid=anellovirus_gb260921|PP816453.1:orf8:code1:662-2605/3394(+1)	groups=anellovirus_gb260921:94;
+cluster_nr=1071	members=94	centroid=ribozyvirus_gb260921|OM169249.1:orf10:code1:45-815/1680(-1)	groups=ribozyvirus_gb260921:94;
+cluster_nr=1089	members=94	centroid=papillomavirus_gb260921|MZ617445.1:orf10:code1:731-2677/8031(+2)	groups=papillomavirus_gb260921:94;
+cluster_nr=1112	members=92	centroid=hepadnavirus_gb260921|PQ480065.1:orf6:code1:2155-4668/3187(+1)	groups=hepadnavirus_gb260921:92;	nCe=2(2.2%)
+cluster_nr=1116	members=92	centroid=nanovirus_gb260921|PP237610.1:orf3:code1:1026-1490/1070(+1)	groups=nanovirus_gb260921:92;
+cluster_nr=1126	members=92	centroid=papillomavirus_gb260921|MT217324.1:orf2:code1:868-2778/7879(+1)	groups=papillomavirus_gb260921:92;
+cluster_nr=1159	members=90	centroid=anellovirus_gb260921|MZ285995.1:orf8:code1:435-2735/3006(+3)	groups=anellovirus_gb260921:90;	nCe=1(1.1%)
+cluster_nr=1202	members=89	centroid=geminivirus_gb260921|KX024643.1:orf12:code1:2615-3685/2781(-2)	groups=geminivirus_gb260921:89;
+cluster_nr=1233	members=88	centroid=geminivirus_gb260921|GQ268223.1:orf5:code1:1202-2302/1356(-2)	groups=geminivirus_gb260921:88;
+cluster_nr=1234	members=88	centroid=geminivirus_gb260921|JQ647487.1:orf14:code1:2511-3302/2750(-1)	groups=geminivirus_gb260921:88;
+cluster_nr=1237	members=88	centroid=papillomavirus_gb260921|PV418822.1:orf19:code1:914-2842/7858(+1)	groups=papillomavirus_gb260921:88;
+cluster_nr=1263	members=87	centroid=plasmidsub7000_gb260921|NZ_CP032428.1:orf3:code1:2503-3369/4305(+1)	groups=plasmidsub7000_gb260921:87;
+cluster_nr=1270	members=86	centroid=nanovirus_gb260921|FJ859735.1:orf3:code1:213-737/1075(+1)	groups=nanovirus_gb260921:86;
+cluster_nr=1287	members=86	centroid=papillomavirus_gb260921|PV419172.1:orf19:code1:914-2842/7858(+1)	groups=papillomavirus_gb260921:86;
+cluster_nr=1307	members=85	centroid=pospiviroid_gb260921|KC584015.1:orf1:code1:229-528/302(-1)	groups=pospiviroid_gb260921:85;	nCe=23(27.1%)
