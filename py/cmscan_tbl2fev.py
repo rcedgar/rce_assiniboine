@@ -74,7 +74,7 @@ def Flush():
 			Str += ","
 		Str += GetHitStr(HitIndex)
 
-	s = CurrentLabel
+	s = "label=" + CurrentLabel
 	s += "\tcmhits=%d:%d:%d/" % (N, Np, Nm)
 	s += Str
 	print(s)
