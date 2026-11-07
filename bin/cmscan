@@ -1,0 +1,12 @@
+#!/bin/sh
+BINNAME=`basename $0`
+
+if ! dpkg-architecture --is i386 || grep -q '^flags[[:space:]]*:.* sse2 ' /proc/cpuinfo ; then
+    /usr/lib/infernal/$BINNAME $@
+else
+cat <<EOT
+To run $BINNAME from infernal package your proccessor needs SSE2 which is not
+available on this machine.
+ ... Exiting
+EOT
+fi
