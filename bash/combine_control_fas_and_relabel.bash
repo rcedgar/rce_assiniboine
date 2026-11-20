@@ -1,6 +1,5 @@
 #!/bin/bash -e
 
-mkdir -p ../output
 mkdir -p ../big_output
 
 outfa=../big_output/controls.fa
@@ -24,3 +23,9 @@ do
 		| sed "-es/>\([^ ]*\) .*/>\1/" \
 		>> $outfa
 done
+
+usearch \
+	-sortbylength controls.fa \
+	-minseqlength 100 \
+	-maxseqlength 6000 \
+	-fastaout controls_length100to6000_bylength.fa
