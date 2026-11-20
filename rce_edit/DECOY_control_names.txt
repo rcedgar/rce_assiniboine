@@ -1,0 +1,11 @@
+anellovirus_gb260921
+circovirus_gb260921
+geminivirus_gb260921
+genomovirus_gb260921
+hepadnavirus_gb260921
+humancirc_gb260921
+nanovirus_gb260921
+papillomavirus_gb260921
+plasmidsub7000_gb260921
+polyomavirus_gb260921
+satellite_gb260921
