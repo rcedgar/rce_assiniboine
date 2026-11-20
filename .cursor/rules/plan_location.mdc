@@ -1,0 +1,7 @@
+---
+description: Write plans to .cursor_plans/
+alwaysApply: true
+---
+
+# Write plans to REPO_ROOT/.cursor_plans
+Name of plan is DESCRIPTIVE_NAME.md or .mdc

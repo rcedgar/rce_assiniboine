@@ -1,0 +1,8 @@
+---
+description: do not use C++ exceptions
+alwaysApply: true
+---
+
+All use of C++ exceptions in new code is forbidden including throw, try and catch.
+
+It is allowed to call an STL function which may throw an exception; prefer to use a different call unless there is a meaningful performance penalty. If an exception may be thrown, prefer to use asserta to trap errors before the call unless the asserta call may add meaningful overhead e.g. inside inner loops.

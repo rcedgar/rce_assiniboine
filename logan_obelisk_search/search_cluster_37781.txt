@@ -1,0 +1,19 @@
+usearch -usearch_local ../cluster_37781/centroid.fa -db Obelisk_DB_v1.1b_clean_aa.fasta -evalue 0.01 -userout search_cluster_37781.hits -userfields query+target+id+evalue -id 0.5 -alnout search_cluster_37781.txt 
+usearch v11.1.i86linux64, 32.6Gb RAM, 128 cores
+
+Query >ROD|SRR16612835_179353_circle_179353:orf3:code1:630-1289/1649(+1)
+ Score     Evalue   %Id    QueryLo-Hi(Un)   TargetLo-Hi(Un)  Target
+   715      1e-75   97%         78-220(0)          1-143(0)  Obelisk_Ob002731_S000001_N000001
+
+ Query 220aa >ROD|SRR16612835_179353_circle_179353:orf3:code1:630-1289/1649(+1)
+Target 143aa >Obelisk_Ob002731_S000001_N000001
+
+Qry  78 LYNEDSIKLFLGDFYSNTLDDIITILFVTETNCFTSIQAFHGYFNDNKLLAVLEQIYFILDKPKKPREVRRIGVGYRDKG 157
+        |||||||||||||||||||||||||||||:|.||.||||||||||||||||||||||||||||||| |||||||||||||
+Tgt   1 LYNEDSIKLFLGDFYSNTLDDIITILFVTQTSCFSSIQAFHGYFNDNKLLAVLEQIYFILDKPKKPLEVRRIGVGYRDKG 80
+
+Qry 158 STRQKHEKIYLPNDVGFQYYKIEKRRILLRLQHQLKVISVQKSMEALKQSNYDFFVKIKKDKD 220
+        |||||||||||| ||||||||||||||||||||||||||||||||||||||||||||||||||
+Tgt  81 STRQKHEKIYLPEDVGFQYYKIEKRRILLRLQHQLKVISVQKSMEALKQSNYDFFVKIKKDKD 143
+
+143 cols, 138 ids (96.5%), 0 gaps (0.0%), score 715.0 (280.0 bits), Evalue 1.4e-75

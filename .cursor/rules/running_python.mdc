@@ -1,0 +1,8 @@
+---
+description: prefer WSL, core Python
+alwaysApply: true
+---
+
+Run python scripts under WSL
+Prefer core Python.
+If imports such as numpy, pandas etc. needed use bob's conda environment null_model

@@ -1,0 +1,3 @@
+human intron rod
+slack https://hackseq-rna.slack.com/archives/C0BSF42QGE6/p1795020583672129
+ROD|ERR1338012_105845_circle_105845     ROD|DRR493706_34484_circle_34484

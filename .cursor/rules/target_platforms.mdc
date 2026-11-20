@@ -1,0 +1,6 @@
+---
+description: portability
+alwaysApply: true
+---
+
+Code should be portable to Windows and Linux (now) and OSX (later).

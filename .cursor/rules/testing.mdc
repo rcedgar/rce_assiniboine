@@ -1,0 +1,6 @@
+---
+description: test under WSL
+alwaysApply: true
+---
+
+Run all testing under WSL. Build the Linux binary in `build-linux`, not the Windows exe. Regenerate the figures with `test_scripts/go.bash` from `test_scripts`.

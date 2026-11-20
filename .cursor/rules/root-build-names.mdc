@@ -1,0 +1,7 @@
+---
+description: root build names
+alwaysApply: true
+---
+
+In the root of this repo, build-*/ must be a directory created by the build system,
+it must be safe to rm -rf build-* (i.e. these files are rebuilt by building).
