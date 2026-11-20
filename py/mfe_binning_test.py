@@ -12,6 +12,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import mfe_binning_build_bins as build
+import mfe_binning_calc_z as zscore
 import mfe_binning_features as feat
 
 N_MIN = 400
@@ -311,3 +312,72 @@ def test_cli_writes_tree_and_meta(tmp_path):
     assert "x[axis] < threshold -> left" in meta
     assert int(np.count_nonzero(loaded.is_leaf)) >= 1
     assert loaded.parent[0] == -1
+
+
+def test_z_matches_leaf_train_stats(smooth, tmp_path):
+    length, na, nc, ng, nt, mfe = make_smooth()
+    take = slice(0, 5)
+    mean, var, z, n_bad = zscore.leaf_mean_var_z(
+        smooth["tree"],
+        length[take],
+        mfe[take],
+        na[take],
+        nc[take],
+        ng[take],
+        nt[take],
+    )
+    assert n_bad == 0
+    leaf = feat.assign(
+        smooth["tree"],
+        feat.features(length[take], na[take], nc[take], ng[take], nt[take]),
+    )
+    expect_mean = smooth["tree"].mean_train[leaf]
+    expect_var = smooth["tree"].var_train[leaf]
+    assert np.allclose(mean, expect_mean)
+    assert np.allclose(var, expect_var)
+    assert np.all(expect_var > 0)
+    expect_z = (mfe[take] - expect_mean) / np.sqrt(expect_var)
+    assert np.allclose(z, expect_z)
+
+    bad_length = length[:2].copy()
+    bad_mfe = mfe[:2].copy()
+    bad_length[1] = 0
+    bad_mfe[1] = np.nan
+    mean_b, var_b, z_b, n_bad = zscore.leaf_mean_var_z(
+        smooth["tree"],
+        bad_length,
+        bad_mfe,
+        na[:2],
+        nc[:2],
+        ng[:2],
+        nt[:2],
+    )
+    assert n_bad == 1
+    assert np.isnan(mean_b[1]) and np.isnan(var_b[1]) and np.isnan(z_b[1])
+    assert z_b[0] == pytest.approx(z[0])
+
+    tree_path = tmp_path / "tree.tsv"
+    build.write_tree_tsv(str(tree_path), smooth["tree"])
+    src = tmp_path / "in.tsv"
+    with src.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write("MFE\tlabel\tNT\tNG\tNC\tNA\tlength\n")
+        for i in range(5):
+            handle.write(
+                f"{mfe[i]:.17g}\tseq{i}\t{int(nt[i])}\t{int(ng[i])}\t{int(nc[i])}\t{int(na[i])}\t{int(length[i])}\n"
+            )
+        handle.write("nan\tbad\t1\t1\t1\t1\t0\n")
+    out = tmp_path / "out.tsv"
+    zscore.main(
+        ["--tree", str(tree_path), "--input", str(src), "--output", str(out)]
+    )
+    lines = out.read_text(encoding="utf-8").splitlines()
+    assert lines[0] == "label\tMFE\tmean\tvariance\tZ"
+    assert len(lines) == 7
+    for i in range(5):
+        label, mfe_text, mean_text, var_text, z_text = lines[i + 1].split("\t")
+        assert label == f"seq{i}"
+        assert float(mfe_text) == pytest.approx(mfe[i])
+        assert float(mean_text) == pytest.approx(mean[i])
+        assert float(var_text) == pytest.approx(var[i])
+        assert float(z_text) == pytest.approx(z[i])
+    assert lines[6].split("\t") == ["bad", "nan", "nan", "nan", "nan"]

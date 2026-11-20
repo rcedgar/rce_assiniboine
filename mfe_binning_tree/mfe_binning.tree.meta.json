@@ -1,0 +1,49 @@
+{
+  "features": [
+    {
+      "name": "x0",
+      "definition": "log(L)"
+    },
+    {
+      "name": "x1",
+      "definition": "(NC+NG)/L"
+    },
+    {
+      "name": "x2",
+      "definition": "(NA-NT)/L"
+    },
+    {
+      "name": "x3",
+      "definition": "(NG-NC)/L"
+    }
+  ],
+  "feature_dtype": "float64",
+  "parameters": {
+    "n_min": 2000,
+    "tau": 0.02,
+    "max_depth": 40,
+    "holdout_frac": 0.2,
+    "seed": 1,
+    "mfe_float32": false
+  },
+  "rows": {
+    "read": 10022126,
+    "dropped": 0,
+    "train": 8017701,
+    "holdout": 2004425,
+    "dropped_reasons": {
+      "L<=0": 0,
+      "sum!=L": 0,
+      "mfe": 0,
+      "length2": 0
+    }
+  },
+  "tree_depth": 12,
+  "n_leaves": 1762,
+  "n_nodes": 3523,
+  "split_convention": "x[axis] < threshold -> left",
+  "variance": "ddof=1",
+  "skew_kurtosis": "bias-uncorrected central moments (divide by n)",
+  "residual_variance": "SSE / (n - 5)",
+  "quantiles": "linear quantiles at 0.001, 0.01, 0.99, 0.999"
+}
