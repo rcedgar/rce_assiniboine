@@ -1,4 +1,6 @@
-mp/
+
+logan_obelisk_search/
+tmp/
 tmp*
 *.tmp
 misc/*
