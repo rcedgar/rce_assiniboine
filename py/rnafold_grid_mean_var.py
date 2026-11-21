@@ -37,6 +37,7 @@ for fn in sys.argv[1:]:
 	mean = statistics.mean(mfes)
 	stddev = statistics.stdev(mfes)
 	flds = fn.replace('.txt', '').split('_')
+	flds[0] = flds[0].replace("L", "")
 	s = '\t'.join(flds)
 	s += f"\t{n}\t{mean:.1f}\t{stddev:.3g}"
 	print(s)
