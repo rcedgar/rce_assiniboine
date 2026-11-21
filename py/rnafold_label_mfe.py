@@ -8,17 +8,22 @@
 # Output is TSV with 1=label 2=MFE
 
 import sys
+import re
 
-label = None
-for line in open(sys.argv[1]):
-	if line.startswith('>'):
-		label = line[1:-1]
-		continue
-	if line[-2] == ")":
-		# print(line)
-		line = line.strip()
-		flds = line.split()
-		MFE = flds[1][1:-1]
-		print(label + "\t" + MFE)
-		label = None
-		continue
+pattern = r"\(\s*([+-]?(?:\d+\.?\d*|\.\d+))\s*\)"
+
+for fn in sys.argv[1:]:
+	label = None
+	for line in open(fn):
+		if line.startswith('>'):
+			label = line[1:-1]
+			continue
+		if line[-2] == ")":
+			line = line.strip()
+			match = re.search(pattern, line)
+			if not match:
+				continue
+			MFE = match.group(1)
+			print(label + "\t" + MFE)
+			label = None
+			continue
