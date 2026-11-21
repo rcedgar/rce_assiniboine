@@ -13,6 +13,7 @@ import statistics
 
 pattern = r"\(\s*([+-]?(?:\d+\.?\d*|\.\d+))\s*\)"
 
+print("#L	fA	fC	fG	fT	n	mean	stddev")
 for fn in sys.argv[1:]:
 	label = None
 	mfes = []
@@ -35,4 +36,7 @@ for fn in sys.argv[1:]:
 			continue
 	mean = statistics.mean(mfes)
 	stddev = statistics.stdev(mfes)
-	print(f"{fn}\t{n}\t{mean:.1f}\t{stddev:.3g}")
+	flds = fn.replace('.txt', '').split('_')
+	s = '\t'.join(flds)
+	s += f"\t{n}\t{mean:.1f}\t{stddev:.3g}"
+	print(s)
