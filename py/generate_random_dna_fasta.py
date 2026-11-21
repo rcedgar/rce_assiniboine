@@ -73,7 +73,7 @@ def random_sequence(counts: list[int]) -> str:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
-        description="Write one random DNA FASTA record with prescribed base frequencies."
+        description="Write N random DNA FASTA records with prescribed base frequencies."
     )
     parser.add_argument("label", help="FASTA defline label")
     parser.add_argument("L", type=int, help="Sequence length")
