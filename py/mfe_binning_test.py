@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import mfe_binning_build_bins as build
 import mfe_binning_calc_z as zscore
 import mfe_binning_features as feat
+import mfe_binning_ranges as ranges
 
 N_MIN = 400
 TAU = 0.02
@@ -376,8 +377,43 @@ def test_z_matches_leaf_train_stats(smooth, tmp_path):
     for i in range(5):
         label, mfe_text, mean_text, var_text, z_text = lines[i + 1].split("\t")
         assert label == f"seq{i}"
-        assert float(mfe_text) == pytest.approx(mfe[i])
-        assert float(mean_text) == pytest.approx(mean[i])
-        assert float(var_text) == pytest.approx(var[i])
-        assert float(z_text) == pytest.approx(z[i])
+        assert mfe_text == zscore._fmt(mfe[i])
+        assert mean_text == zscore._fmt(mean[i])
+        assert var_text == zscore._fmt(var[i])
+        assert z_text == zscore._fmt(z[i])
     assert lines[6].split("\t") == ["bad", "nan", "nan", "nan", "nan"]
+
+
+def test_leaf_ranges_cover_training_features_and_known_cell(smooth, tmp_path):
+    tree = smooth["tree"]
+    lo, hi = ranges.all_feature_cells(tree)
+    leaf_ids = feat.assign(tree, smooth["X_train"])
+    assert np.all(smooth["X_train"] >= lo[leaf_ids])
+    assert np.all(smooth["X_train"] < hi[leaf_ids])
+
+    cell_lo = np.array([np.log(10.0), 0.4, 0.0, 0.0])
+    cell_hi = np.array([np.log(20.0), 0.6, 0.2, 0.1])
+    span = ranges.parameter_ranges(cell_lo, cell_hi)
+    assert span.L_lo == 10
+    assert span.L_hi == 20
+    assert span.NA_lo == 2
+    assert span.NA_hi == 8
+    # 10.5 <= L < 20.5 is the integers 11..20, written [11, 21).
+    fractional = ranges.parameter_ranges(
+        np.array([np.log(10.5), 0.4, 0.0, 0.0]),
+        np.array([np.log(20.5), 0.6, 0.2, 0.1]),
+    )
+    assert fractional.L_lo == 11
+    assert fractional.L_hi == 21
+    assert ranges.integer_half_open(20.000000000000004, float("inf")) == (20.0, float("inf"))
+
+    tree_path = tmp_path / "tree.tsv"
+    out_path = tmp_path / "ranges.tsv"
+    build.write_tree_tsv(str(tree_path), tree)
+    ranges.main(["--tree", str(tree_path), "--output", str(out_path)])
+    lines = out_path.read_text(encoding="utf-8").splitlines()
+    n_leaves = int(np.count_nonzero(tree.is_leaf))
+    assert lines[0] == ranges.OUTPUT_HEADER
+    assert len(lines) == n_leaves + 1
+    assert lines[1].split("\t")[0] == "0"
+    assert lines[-1].split("\t")[0] == str(n_leaves - 1)

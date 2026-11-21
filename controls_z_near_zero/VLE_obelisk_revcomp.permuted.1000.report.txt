@@ -1,0 +1,76 @@
+==============================================================================
+RNAfold --circ MFE: original vs. 1000 permuted sequences
+==============================================================================
+Input file     : VLE_obelisk_revcomp.fa
+Sequence       : VLE_obelisk_zheludev:._cluster=Cluster_001958_000011_000001 (1072 nt)
+Permutations   : 1000, mononucleotide shuffle, seed 741016180
+Permuted fasta : ./VLE_obelisk_revcomp.permuted.1000.fa
+
+Original sequence and circular MFE structure:
+    AAAATTGGTTATTAATTTCATCCGAAAGGAAACTATTCATGGAGAAAGAGATTTCTTCCT
+    ATTCTTGGTCTCAATCACTTGAGATTCAGATATCGGAAGTCATCACTACTCTAGAACAAG
+    TTCCAAAGGACGAAAGAAATCTCCTTTTTCAAAGAGTTATCTTTTGGACTCGGCAGTTAG
+    TGGCTTCTCTAGAGACAGGAGGAAGTGGATCGGGTGCCACATCTCTCTCTTCGAATGAAT
+    TGAGACTTGTGAAACTCTGTTCCTCTCTCACCAATCTTCCTTCAAGGATGTGACGTAGTT
+    GGCACTCTCGCTCCCAATCGAGGTACTCGATCGTGAACTTGAGCTCCTTTACTCAAAGTC
+    CTTCGAAAAGAAGACAGAGAGTCTCCGAACCAAAGTCTCGGATAGTCCGACACAGTTTCC
+    CAGTAACGTTGATTTTACCAGGTTGGTCATCAAAACTAGGAAGCAGAAGGACCTGATAGG
+    GCTGATCATTTTGTCATGGTACATGCCTGATGAAATACGGTTCATCCTTCAACTCCAACT
+    CTCGGAAATCAAGTGGAAGGATCTAGGTTTTGACTTAGGGAGTCTCCTCCTGACGTCTAA
+    AGCCTATACCCTCGCTTGGCTCCTTGAGCAGGAATTTTGGAATGAATCCGACTTCTTCGG
+    CAATGTCCTAAACAAAGATCTTGCTCGAATCTGGACTTCTTGCGACTTTGTTAGAAGACC
+    AACCGGTTATGTCAAGCGTTACACGGGTTACTGCCGTGGCTACCGAGACTCTAGCCGGAG
+    AGCTCCTAGTCCTCTTCCGTCGGAACTTGTTTCAAAGAGTTCGGTCTACGAAGAGACCAG
+    ATTAGAGATTGAAAGGCAACGTAATCTCATCCTCTGGGTCGAAAGGATCGAGAGAAGACT
+    GAGAATCAGTTGACTTAATTCAATCTCGGAGAGAGGGTCGGACATCCCGACCCTTTCTCT
+    TTGTCTTCTATGAAGGCTCATTAACAACCTGGTCACTAAGATTAACAATTTAAAATTGGT
+    TATTAATTTCATCCGAAAGGAAACTATTCATGGAGAAAGAGATTTCTTCCTA
+
+    ......((.........((.(((....((((....(((.(((((..((.(((..(((((.
+    ..(((.((((((((....)))))))).)))....)))))..))).)).))))))))....
+    ))))...))).))((((((((((.(((((((...((((.(((((((((...((..(((((
+    ((((((.((((((((((((.(((((.((((.(((.((((((..((((..(((....))).
+    .))))..))))...........((((((......(((((.(((((((((.(((.((((..
+    ((..(((..(.((.(.((((((...)))))).).)).)..)))..)).)))))))..)))
+    ))).)))..))))).))))))((((((......((((((((.(((((((...((((..((
+    (.(((((((((((...(((.((((((((.((..(((.(((..(((((((..((.(((.((
+    ((.((((..(((((...((.(((((((.((.(((.(.((((((((((......(((..((
+    (..(((..(((((((..(((...(((((((((((...(((((....)))))...))).))
+    ))))))...)))))))))).)))..)))..))).....)).))))).)))).))).))))
+    ).))))))...)))))))))..))))..))).)).)))).)))..))).))).)).))))
+    )))))))...))).))))))))..)))..)))).)).))))))))))))).....)))))
+    ))).))).)))).))))).)).((((((........))))))(((((......)))))..
+    ....((((((((((((((((....(((((((((((.((((.....)))).))))..)).)
+    ))))....)))).)))..)))))))))((((((((((((((.....))))))))))))))
+    .)))).)))).)))))).)))))))..))((((.(((((..((((....))))..)))))
+    .))))......))))))))).)))).....))))))).))))))))))))..
+
+Original MFE   :  -384.90 kcal/mol
+Permuted MFE   : mean -277.16, sd 9.05, min -304.00, max -253.40 kcal/mol
+
+Histogram of permuted MFEs (bin width 10 kcal/mol, each # ~ 6.9 sequences)
+
+   MFE bin (kcal/mol)   count
+  [ -390.00, -380.00)       0    <== ORIGINAL (-384.90)
+  [ -380.00, -370.00)       0  
+  [ -370.00, -360.00)       0  
+  [ -360.00, -350.00)       0  
+  [ -350.00, -340.00)       0  
+  [ -340.00, -330.00)       0  
+  [ -330.00, -320.00)       0  
+  [ -320.00, -310.00)       0  
+  [ -310.00, -300.00)       7  #
+  [ -300.00, -290.00)      85  ############
+  [ -290.00, -280.00)     273  #######################################
+  [ -280.00, -270.00)     416  ############################################################
+  [ -270.00, -260.00)     196  ############################
+  [ -260.00, -250.00)      23  ###
+
+Rank order (1 = lowest / most stable MFE, among original + permutations):
+  Original rank          : 1 of 1001
+  Permuted with MFE <  original : 0 (0.0%)
+  Permuted with MFE == original : 0
+  Permuted with MFE >  original : 1000 (100.0%)
+  Z-score                : -11.91
+  Empirical p (MFE <= original) : 0.000999
+==============================================================================

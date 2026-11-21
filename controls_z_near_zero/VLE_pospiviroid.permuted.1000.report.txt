@@ -1,0 +1,54 @@
+==============================================================================
+RNAfold --circ MFE: original vs. 1000 permuted sequences
+==============================================================================
+Input file     : VLE_pospiviroid.fa
+Sequence       : VLE_pospiviroid_gb260921:AY425171.1 (297 nt)
+Permutations   : 1000, mononucleotide shuffle, seed 829166624
+Permuted fasta : ./VLE_pospiviroid.permuted.1000.fa
+
+Original sequence and circular MFE structure:
+    CTGGGGAATTCTCGAGTTGCCGCAAAAGGCATGCAAAGAAAAAAACTAGGCAGGGAGGTG
+    CTTACCTGAGAAAGGAGCCCCGGGGCAACTCTTCTCAGAATCCAGCGAGAGGCGTGGAGA
+    GAGGGCCGCGGTGCTCTGGAGTAGAGGCTCTGCCTTCGAAACACCATCGATCGTCCCTTC
+    TTCTTTACCTTCTTCTGGCTCTTCTTGGAGACGCGACCGGTGGCACCCCTGCTCGGTTCG
+    CTCCAACCTGCTTTTGTTCTATCTGCGCCTCTGCCGCGGATCCTCTCTTGAGCCCCT
+
+    ..((((....((((((...((((....((((.((..(((....(((.(((((((..((.(
+    (..(((.(((..(((.(((((((.((...(((((..((((.((((.((((((.(((((((
+    (((((..(((((....(((.((.(((((...)))))....)).)))...))))).)))))
+    .)))))))))))))))))...)))).))))).))..)))).)))...))).))))))..)
+    ).))..)))))))..)))...)))..))...)))))))).......)))))))))).
+
+Original MFE   :  -110.00 kcal/mol
+Permuted MFE   : mean -96.34, sd 5.44, min -115.20, max -81.00 kcal/mol
+
+Histogram of permuted MFEs (bin width 2 kcal/mol, each # ~ 2.3 sequences)
+
+   MFE bin (kcal/mol)   count
+  [ -116.00, -114.00)       1  #
+  [ -114.00, -112.00)       1  #
+  [ -112.00, -110.00)       2  #
+  [ -110.00, -108.00)      19  ########  <== ORIGINAL (-110.00)
+  [ -108.00, -106.00)      19  ########
+  [ -106.00, -104.00)      45  ####################
+  [ -104.00, -102.00)      73  ################################
+  [ -102.00, -100.00)      81  ###################################
+  [ -100.00,  -98.00)     131  #########################################################
+  [  -98.00,  -96.00)     134  ###########################################################
+  [  -96.00,  -94.00)     137  ############################################################
+  [  -94.00,  -92.00)     131  #########################################################
+  [  -92.00,  -90.00)     108  ###############################################
+  [  -90.00,  -88.00)      65  ############################
+  [  -88.00,  -86.00)      30  #############
+  [  -86.00,  -84.00)      17  #######
+  [  -84.00,  -82.00)       5  ##
+  [  -82.00,  -80.00)       1  #
+
+Rank order (1 = lowest / most stable MFE, among original + permutations):
+  Original rank          : 5 of 1001
+  Permuted with MFE <  original : 4 (0.4%)
+  Permuted with MFE == original : 1
+  Permuted with MFE >  original : 995 (99.5%)
+  Z-score                : -2.51
+  Empirical p (MFE <= original) : 0.005994
+==============================================================================
