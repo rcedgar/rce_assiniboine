@@ -13,7 +13,7 @@ import statistics
 
 pattern = r"\(\s*([+-]?(?:\d+\.?\d*|\.\d+))\s*\)"
 
-print("#L	fA	fC	fG	fT	n	mean	stddev")
+print("#L	fA	fC	fG	fT	n	mean	stddev	cmean	cstddev")
 for fn in sys.argv[1:]:
 	label = None
 	mfes = []
@@ -31,13 +31,14 @@ for fn in sys.argv[1:]:
 			mfes.append(float(MFE))
 			label = None
 			continue
-		n = len(mfes)
-		if n < 20:
-			continue
+	n = len(mfes)
+	if n < 20:
+		continue
 	mean = statistics.mean(mfes)
 	stddev = statistics.stdev(mfes)
 	flds = fn.replace('.txt', '').split('_')
 	flds[0] = flds[0].replace("L", "")
+	L = int(flds[0])
 	s = '\t'.join(flds)
-	s += f"\t{n}\t{mean:.1f}\t{stddev:.3g}"
+	s += f"\t{n}\t{mean:.1f}\t{stddev:.3g}\t{100*mean/L:.3g}\t{100*stddev/L:.3g}"
 	print(s)
