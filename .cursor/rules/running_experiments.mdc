@@ -1,0 +1,10 @@
+---
+description: make a bash script for every experiment
+alwaysApply: true
+---
+
+if prompted to run an experiment, always make a script
+
+bash/EXPERIMENT_NAME.bash
+
+to execute the workflow and results.

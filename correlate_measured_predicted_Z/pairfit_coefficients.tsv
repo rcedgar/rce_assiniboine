@@ -1,0 +1,14 @@
+feature	cmean	cstddev
+sigma_composition	0.0625	0.0625
+sigma_log_L	0.182322	0.182322
+intercept		
+fA		
+fC		
+fG		
+fC_fG		
+fA_fT		
+fG_fT		
+inv_L		
+fC_fG_sq		
+fA_fT_sq		
+fG_fT_sq		
