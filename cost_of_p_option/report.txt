@@ -1,0 +1,13 @@
+RNAfold -p incremental cost
+RNAfold: /home/bob/miniconda3/envs/std/bin/RNAfold
+input: first 10 sequences of big_output/controls.subset1000.fa
+lengths (nt): 435,339,336,336,335,337,336,339,336,336
+length range (nt): 335-435
+command: RNAfold --circ --noPS --jobs=1 sample10.fa
+
+run                wall_s       user_s        sys_s     max_rss_kb
+without -p           0.45         0.49         0.00           6144
+with -p              1.62         1.72         0.01          11264
+
+wall time: -p adds 1.17 s (3.60x)
+max RSS:   -p adds 5120 kB (1.83x)
