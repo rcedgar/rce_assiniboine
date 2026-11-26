@@ -1,0 +1,34 @@
+Circle features, VLE versus DECOY.
+Oriented AUC is max(AUC, 1-AUC). Chance is 0.5.
+higher is the class whose values tend to be larger.
+Cohen's d is (mean VLE - mean DECOY) / pooled SD.
+
+classes
+VLE	23133
+DECOY	649778
+
+top 8 by raw oriented AUC
+1	longest_composite_stem_total_nr_bases	oriented_auc=0.9878	higher=VLE	cohens_d=5.05069	median_vle=348	median_decoy=63
+2	longest_composite_stem_nr_paired_bases	oriented_auc=0.9863	higher=VLE	cohens_d=4.5965	median_vle=254	median_decoy=48
+3	pct_paired_bases	oriented_auc=0.9676	higher=VLE	cohens_d=1.92872	median_vle=70.9	median_decoy=60
+4	pct_bulge	oriented_auc=0.9524	higher=VLE	cohens_d=2.24121	median_vle=22.4	median_decoy=11.8
+5	pct_symmetric_loops	oriented_auc=0.9352	higher=VLE	cohens_d=1.98737	median_vle=18.6	median_decoy=9.45
+6	pct_excess_bulges	oriented_auc=0.9131	higher=VLE	cohens_d=1.74349	median_vle=15.5	median_decoy=8.06
+7	bulge_to_stem_ratio	oriented_auc=0.8854	higher=VLE	cohens_d=1.39966	median_vle=0.316	median_decoy=0.197
+8	longest_composite_stem_pct_total_bases	oriented_auc=0.8832	higher=VLE	cohens_d=2.0226	median_vle=53	median_decoy=17.1
+
+top 8 by oriented AUC after residualizing on log(nr_bases)
+nr_bases is the covariate and is omitted.
+1	longest_composite_stem_total_nr_bases	oriented_auc=0.9861	higher=VLE	median_vle=348	median_decoy=63
+2	longest_composite_stem_nr_paired_bases	oriented_auc=0.9845	higher=VLE	median_vle=254	median_decoy=48
+3	pct_bulge	oriented_auc=0.9628	higher=VLE	median_vle=22.4	median_decoy=11.8
+4	longest_composite_stem_pct_total_bases	oriented_auc=0.9576	higher=VLE	median_vle=53	median_decoy=17.1
+5	pct_symmetric_loops	oriented_auc=0.9480	higher=VLE	median_vle=18.6	median_decoy=9.45
+6	pct_paired_bases	oriented_auc=0.9455	higher=VLE	median_vle=70.9	median_decoy=60
+7	pct_excess_bulges	oriented_auc=0.9292	higher=VLE	median_vle=15.5	median_decoy=8.06
+8	bulge_to_stem_ratio	oriented_auc=0.9173	higher=VLE	median_vle=0.316	median_decoy=0.197
+
+near-constant features (at least 99% of rows share one value)
+longest_stem_pct_paired_bases	value=100	fraction=1.0000
+
+Full table: feature_ranking.tsv

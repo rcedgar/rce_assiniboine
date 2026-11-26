@@ -1,0 +1,34 @@
+Circle features, VLE versus DECOY.
+Oriented AUC is max(AUC, 1-AUC). Chance is 0.5.
+higher is the class whose values tend to be larger.
+Cohen's d is (mean VLE - mean DECOY) / pooled SD.
+
+classes
+VLE	375
+DECOY	1100
+
+top 8 by raw oriented AUC
+1	longest_composite_stem_total_nr_bases	oriented_auc=0.9921	higher=VLE	cohens_d=2.39673	median_vle=479	median_decoy=83
+2	longest_composite_stem_nr_paired_bases	oriented_auc=0.9911	higher=VLE	cohens_d=2.33999	median_vle=356	median_decoy=64
+3	pct_bulge	oriented_auc=0.9864	higher=VLE	cohens_d=4.19074	median_vle=22.6	median_decoy=10.7
+4	pct_symmetric_loops	oriented_auc=0.9736	higher=VLE	cohens_d=3.27038	median_vle=17.8	median_decoy=8.49
+5	pct_excess_bulges	oriented_auc=0.9725	higher=VLE	cohens_d=3.30551	median_vle=15.5	median_decoy=7.27
+6	bulge_to_stem_ratio	oriented_auc=0.9701	higher=VLE	cohens_d=3.11685	median_vle=0.313	median_decoy=0.174
+7	pct_paired_bases	oriented_auc=0.9683	higher=VLE	cohens_d=2.14483	median_vle=71.1	median_decoy=61.8
+8	pct_true_bulges	oriented_auc=0.9349	higher=VLE	cohens_d=2.36659	median_vle=4.36	median_decoy=2.11
+
+top 8 by oriented AUC after residualizing on log(nr_bases)
+nr_bases is the covariate and is omitted.
+1	longest_composite_stem_total_nr_bases	oriented_auc=0.9956	higher=VLE	median_vle=479	median_decoy=83
+2	longest_composite_stem_nr_paired_bases	oriented_auc=0.9952	higher=VLE	median_vle=356	median_decoy=64
+3	longest_composite_stem_pct_total_bases	oriented_auc=0.9866	higher=VLE	median_vle=45.5	median_decoy=4.525
+4	pct_bulge	oriented_auc=0.9857	higher=VLE	median_vle=22.6	median_decoy=10.7
+5	pct_symmetric_loops	oriented_auc=0.9766	higher=VLE	median_vle=17.8	median_decoy=8.49
+6	pct_excess_bulges	oriented_auc=0.9739	higher=VLE	median_vle=15.5	median_decoy=7.27
+7	bulge_to_stem_ratio	oriented_auc=0.9717	higher=VLE	median_vle=0.313	median_decoy=0.174
+8	pct_paired_bases	oriented_auc=0.9683	higher=VLE	median_vle=71.1	median_decoy=61.8
+
+near-constant features (at least 99% of rows share one value)
+longest_stem_pct_paired_bases	value=100	fraction=1.0000
+
+Full table: feature_ranking.tsv

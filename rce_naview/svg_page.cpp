@@ -78,6 +78,123 @@ void group_hsl(int index, int total, char* buf, size_t nbuf) {
     std::snprintf(buf, nbuf, "hsl(%.2f, 72%%, 40%%)", hue);
 }
 
+double clip01(double value) {
+    if (value < 0.0) {
+        return 0.0;
+    }
+    if (value > 1.0) {
+        return 1.0;
+    }
+    return value;
+}
+
+double srgb_encode(double linear) {
+    linear = clip01(linear);
+    if (linear <= 0.0031308) {
+        return 12.92 * linear;
+    }
+    return 1.055 * std::pow(linear, 1.0 / 2.4) - 0.055;
+}
+
+// Same mapping as py/rna_base_frequency_colors.py base_freqs_to_rgb.
+void composition_srgb(double fA, double fU, double fG, double fC, int* r, int* g, int* b) {
+    double x_gc = (fG + fC) - (fA + fU);
+    double x_ry = (fA + fG) - (fU + fC);
+    double x_km = (fG + fU) - (fA + fC);
+    double u_gc = std::tanh(2.2 * x_gc);
+    double u_ry = std::tanh(3.5 * x_ry);
+    double u_km = std::tanh(3.5 * x_km);
+    double L = 0.64 + 0.22 * u_gc;
+    double a = 0.13 * u_ry;
+    double bk = 0.13 * u_km;
+    double l_ = L + 0.3963377774 * a + 0.2158037573 * bk;
+    double m_ = L - 0.1055613458 * a - 0.0638541728 * bk;
+    double s_ = L - 0.0894841775 * a - 1.2914855480 * bk;
+    double l = l_ * l_ * l_;
+    double m = m_ * m_ * m_;
+    double s = s_ * s_ * s_;
+    double r_lin = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+    double g_lin = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+    double b_lin = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+    *r = static_cast<int>(std::lround(clip01(srgb_encode(r_lin)) * 255.0));
+    *g = static_cast<int>(std::lround(clip01(srgb_encode(g_lin)) * 255.0));
+    *b = static_cast<int>(std::lround(clip01(srgb_encode(b_lin)) * 255.0));
+}
+
+void count_base(char base, int* a, int* u, int* g, int* c) {
+    if (base >= 'a' && base <= 'z') {
+        base = static_cast<char>(base - 'a' + 'A');
+    }
+    if (base == 'T') {
+        base = 'U';
+    }
+    if (base == 'A') {
+        *a += 1;
+    } else if (base == 'U') {
+        *u += 1;
+    } else if (base == 'G') {
+        *g += 1;
+    } else if (base == 'C') {
+        *c += 1;
+    }
+}
+
+std::string window_hex(const char* sequence, int n, int center, int window, bool circular) {
+    int a = 0;
+    int u = 0;
+    int g = 0;
+    int c = 0;
+    if (n <= window) {
+        for (int i = 0; i < n; ++i) {
+            count_base(sequence[i], &a, &u, &g, &c);
+        }
+    } else if (circular) {
+        int start = center - (window - 1) / 2;
+        for (int k = 0; k < window; ++k) {
+            int idx = start + k;
+            idx %= n;
+            if (idx < 0) {
+                idx += n;
+            }
+            count_base(sequence[idx], &a, &u, &g, &c);
+        }
+    } else {
+        int start = center - (window - 1) / 2;
+        if (start < 0) {
+            start = 0;
+        }
+        int end = start + window;
+        if (end > n) {
+            end = n;
+            start = end - window;
+            if (start < 0) {
+                start = 0;
+            }
+        }
+        for (int i = start; i < end; ++i) {
+            count_base(sequence[i], &a, &u, &g, &c);
+        }
+    }
+    int total = a + u + g + c;
+    double fA = 0.25;
+    double fU = 0.25;
+    double fG = 0.25;
+    double fC = 0.25;
+    if (total > 0) {
+        fA = static_cast<double>(a) / static_cast<double>(total);
+        fU = static_cast<double>(u) / static_cast<double>(total);
+        fG = static_cast<double>(g) / static_cast<double>(total);
+        fC = static_cast<double>(c) / static_cast<double>(total);
+    }
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+    composition_srgb(fA, fU, fG, fC, &red, &green, &blue);
+    char buf[16];
+    std::snprintf(buf, sizeof(buf), "#%02x%02x%02x", red, green, blue);
+    return std::string(buf);
+}
+
 // Neighbors in this list are far apart in hue, and each is dark enough to read
 // as a glyph on white. Groups past the tenth repeat from the start.
 const char* kDefaultPalette[] = {
@@ -583,12 +700,14 @@ bool naview_svg_color(const char* text) {
 
 bool write_naview_svg(const char* path, const char* label, const char* sequence, const char* db,
                       bool circular, const NavLayout* layout, int wrap, double graph_width,
-                      bool naview_only, bool rainbow, const char* const* palette, int npalette) {
+                      bool naview_only, bool rainbow, const char* const* palette, int npalette,
+                      int color_window) {
     asserta(path && label && sequence && db && layout);
     asserta(wrap >= 1);
     asserta(graph_width > 0.0);
     asserta(npalette >= 0);
     asserta(npalette == 0 || palette);
+    asserta(color_window >= 0);
     const int kWrap = wrap;
     int n = static_cast<int>(layout->x.size());
     asserta(n >= 1);
@@ -839,6 +958,27 @@ bool write_naview_svg(const char* path, const char* label, const char* sequence,
         start5_of[static_cast<size_t>(s5)] = h;
     }
 
+    std::vector<std::string> base_hex;
+    if (color_window > 0) {
+        base_hex.resize(static_cast<size_t>(n));
+        for (int i = 0; i < n; ++i) {
+            base_hex[static_cast<size_t>(i)] =
+                window_hex(sequence, n, i, color_window, circular);
+        }
+    }
+    auto base_paint = [&](int base) -> const char* {
+        if (color_window > 0) {
+            return base_hex[static_cast<size_t>(base)].c_str();
+        }
+        return colors[static_cast<size_t>(base_ci[static_cast<size_t>(base)])].c_str();
+    };
+    auto shape_paint = [&](const std::vector<int>& bases, const char* group_color) -> const char* {
+        if (color_window > 0 && !bases.empty()) {
+            return base_paint(bases[bases.size() / 2]);
+        }
+        return group_color;
+    };
+
     std::fprintf(f, "<g id=\"naview\">\n");
     auto line = [&](double x0, double y0, double x1, double y1, const char* color, double width) {
         std::fprintf(f,
@@ -855,9 +995,9 @@ bool write_naview_svg(const char* path, const char* label, const char* sequence,
                 all[static_cast<size_t>(i)] = i;
             }
             if (n >= 3) {
-                emit_bases(f, pts, all, nav_left, y_nav, color);
+                emit_bases(f, pts, all, nav_left, y_nav, shape_paint(all, color));
             } else {
-                emit_band(f, pts, all, band_half, nav_left, y_nav, color);
+                emit_band(f, pts, all, band_half, nav_left, y_nav, shape_paint(all, color));
             }
         } else {
             std::vector<int> bases;
@@ -867,7 +1007,7 @@ bool write_naview_svg(const char* path, const char* label, const char* sequence,
                     continue;
                 }
                 segment_bases(seg, n, &bases);
-                emit_band(f, pts, bases, band_half, nav_left, y_nav, color);
+                emit_band(f, pts, bases, band_half, nav_left, y_nav, shape_paint(bases, color));
             }
         }
     } else {
@@ -884,11 +1024,11 @@ bool write_naview_svg(const char* path, const char* label, const char* sequence,
                         continue;
                     }
                     segment_bases(seg, n, &bases);
-                    emit_band(f, pts, bases, band_half, nav_left, y_nav, color);
+                    emit_band(f, pts, bases, band_half, nav_left, y_nav, shape_paint(bases, color));
                 }
             } else {
                 std::vector<int> poly = loop_boundary(layout, li, circular, start5_of);
-                emit_bases(f, pts, poly, nav_left, y_nav, color);
+                emit_bases(f, pts, poly, nav_left, y_nav, shape_paint(poly, color));
             }
         }
         for (int h = 0; h < static_cast<int>(layout->helices.size()); ++h) {
@@ -902,29 +1042,30 @@ bool write_naview_svg(const char* path, const char* label, const char* sequence,
             for (int k = helix.end3; k >= helix.start3; --k) {
                 poly.push_back(k);
             }
-            emit_bases(f, pts, poly, nav_left, y_nav, color);
+            emit_bases(f, pts, poly, nav_left, y_nav, shape_paint(poly, color));
         }
     }
     for (int i = 0; i + 1 < n; ++i) {
+        const char* stroke = color_window > 0 ? base_paint(i) : "#212121";
         line(pts[static_cast<size_t>(i)].x + nav_left, pts[static_cast<size_t>(i)].y + y_nav,
              pts[static_cast<size_t>(i + 1)].x + nav_left, pts[static_cast<size_t>(i + 1)].y + y_nav,
-             "#212121", nav_stroke);
+             stroke, nav_stroke);
     }
     if (circular && n > 1) {
+        const char* stroke = color_window > 0 ? base_paint(n - 1) : "#212121";
         line(pts[static_cast<size_t>(n - 1)].x + nav_left, pts[static_cast<size_t>(n - 1)].y + y_nav,
-             pts[0].x + nav_left, pts[0].y + y_nav, "#212121", nav_stroke);
+             pts[0].x + nav_left, pts[0].y + y_nav, stroke, nav_stroke);
     }
     for (int i = 0; i < n; ++i) {
         int j = layout->mate[static_cast<size_t>(i)];
         if (j > i) {
-            const char* color = colors[static_cast<size_t>(base_ci[static_cast<size_t>(i)])].c_str();
             line(pts[static_cast<size_t>(i)].x + nav_left, pts[static_cast<size_t>(i)].y + y_nav,
-                 pts[static_cast<size_t>(j)].x + nav_left, pts[static_cast<size_t>(j)].y + y_nav, color,
-                 nav_stroke);
+                 pts[static_cast<size_t>(j)].x + nav_left, pts[static_cast<size_t>(j)].y + y_nav,
+                 base_paint(i), nav_stroke);
         }
     }
     for (int i = 0; i < n; ++i) {
-        const char* color = colors[static_cast<size_t>(base_ci[static_cast<size_t>(i)])].c_str();
+        const char* color = base_paint(i);
         std::fprintf(f,
                      "<text x=\"%.2f\" y=\"%.2f\" text-anchor=\"middle\" dominant-baseline=\"central\" "
                      "font-family=\"sans-serif\" font-size=\"%.2f\" fill=\"%s\">",
@@ -952,12 +1093,21 @@ bool write_naview_svg(const char* path, const char* label, const char* sequence,
         double top = y_text + static_cast<double>(row) * kRowPitch;
         int at = 0;
         while (at < count) {
-            int ci = base_ci[static_cast<size_t>(begin + at)];
+            int pos = begin + at;
             int end = at + 1;
-            while (end < count && base_ci[static_cast<size_t>(begin + end)] == ci) {
+            while (end < count) {
+                int next = begin + end;
+                bool same = color_window > 0
+                                ? base_hex[static_cast<size_t>(next)] == base_hex[static_cast<size_t>(pos)]
+                                : base_ci[static_cast<size_t>(next)] == base_ci[static_cast<size_t>(pos)];
+                if (!same) {
+                    break;
+                }
                 end += 1;
             }
-            const char* color = colors[static_cast<size_t>(ci)].c_str();
+            const char* color = color_window > 0
+                                    ? base_hex[static_cast<size_t>(pos)].c_str()
+                                    : colors[static_cast<size_t>(base_ci[static_cast<size_t>(pos)])].c_str();
             double x = x0 + static_cast<double>(at) * kAdvance;
             double w = static_cast<double>(end - at) * kAdvance;
             std::fprintf(f,
@@ -980,12 +1130,23 @@ bool write_naview_svg(const char* path, const char* label, const char* sequence,
                      x, y, row_w);
         int at = 0;
         while (at < count) {
-            int ci = base_ci[static_cast<size_t>(begin + at)];
+            int pos = begin + at;
             int end = at + 1;
-            while (end < count && base_ci[static_cast<size_t>(begin + end)] == ci) {
+            while (end < count) {
+                int next = begin + end;
+                bool same = color_window > 0
+                                ? base_hex[static_cast<size_t>(next)] == base_hex[static_cast<size_t>(pos)]
+                                : base_ci[static_cast<size_t>(next)] == base_ci[static_cast<size_t>(pos)];
+                if (!same) {
+                    break;
+                }
                 end += 1;
             }
-            std::fprintf(f, "<tspan fill=\"%s\">", colors[static_cast<size_t>(ci)].c_str());
+            const char* run_color = color_window > 0
+                                        ? base_hex[static_cast<size_t>(pos)].c_str()
+                                        : colors[static_cast<size_t>(base_ci[static_cast<size_t>(pos)])]
+                                              .c_str();
+            std::fprintf(f, "<tspan fill=\"%s\">", run_color);
             std::string run;
             append_escaped(&run, db + begin + at, end - at);
             std::fputs(run.c_str(), f);

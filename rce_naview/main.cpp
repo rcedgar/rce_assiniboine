@@ -2,7 +2,7 @@
 //
 // rce_naview [--label-col N] [--seq-col N] [--db-col N]
 //            [--out-dir DIR] [--wrap N] [--graph-width F]
-//            [--rainbow | --colors LIST] [--threads N]
+//            [--rainbow | --colors LIST | --color-window N] [--threads N]
 //            [--circular] [--header] [--naview-only] input.tsv
 
 #include "filename.hpp"
@@ -41,7 +41,7 @@ static void usage(void) {
     std::fprintf(stdout,
                  "usage: rce_naview [--label-col N] [--seq-col N] [--db-col N]\n"
                  "                  [--out-dir DIR] [--wrap N] [--graph-width F]\n"
-                 "                  [--rainbow | --colors LIST] [--threads N]\n"
+                 "                  [--rainbow | --colors LIST | --color-window N] [--threads N]\n"
                  "                  [--circular] [--header] [--naview-only] input.tsv\n"
                  "\n"
                  "Read label, sequence, and dot-bracket columns (1-based; default 1 2 3)\n"
@@ -49,6 +49,8 @@ static void usage(void) {
                  "symbols (default 60). The graph row is --graph-width times the naview\n"
                  "width (default 1). Groups cycle a 10-color palette. --rainbow uses one\n"
                  "hue per group, and --colors takes a comma-separated list of SVG colors.\n"
+                 "--color-window N paints each base from the A/C/G/U composition of N bases\n"
+                 "centered on it (T counts as U; the window wraps when --circular).\n"
                  "--threads is the number of records laid out and drawn at once (default 1).\n"
                  "--naview-only writes the structure alone, still scaled to the\n"
                  "dot-bracket width. The SVG stem keeps [A-Za-z0-9._], replaces every\n"
@@ -283,6 +285,7 @@ int main(int argc, char** argv) {
     bool naview_only = false;
     bool rainbow = false;
     bool colors_set = false;
+    int color_window = 0;
     std::vector<std::string> color_list;
     bool circular = false;
     bool header = false;
@@ -314,7 +317,8 @@ int main(int argc, char** argv) {
         if (std::strcmp(arg, "--label-col") == 0 || std::strcmp(arg, "--seq-col") == 0 ||
             std::strcmp(arg, "--db-col") == 0 || std::strcmp(arg, "--out-dir") == 0 ||
             std::strcmp(arg, "--wrap") == 0 || std::strcmp(arg, "--graph-width") == 0 ||
-            std::strcmp(arg, "--colors") == 0 || std::strcmp(arg, "--threads") == 0) {
+            std::strcmp(arg, "--colors") == 0 || std::strcmp(arg, "--threads") == 0 ||
+            std::strcmp(arg, "--color-window") == 0) {
             if (i + 1 >= argc) {
                 die("missing option value");
             }
@@ -363,6 +367,12 @@ int main(int argc, char** argv) {
             }
             continue;
         }
+        if (std::strcmp(arg, "--color-window") == 0) {
+            if (!parse_col(value, &color_window)) {
+                die("color-window must be an integer >= 1");
+            }
+            continue;
+        }
         if (std::strcmp(arg, "--colors") == 0) {
             if (!split_colors(value, &color_list)) {
                 die("colors must be a comma-separated list of SVG colors");
@@ -386,8 +396,8 @@ int main(int argc, char** argv) {
     if (label_col == seq_col || label_col == db_col || seq_col == db_col) {
         die("label, sequence, and dot-bracket columns must be distinct");
     }
-    if (rainbow && colors_set) {
-        die("use only one of --rainbow and --colors");
+    if ((rainbow && colors_set) || (rainbow && color_window > 0) || (colors_set && color_window > 0)) {
+        die("use only one of --rainbow, --colors, and --color-window");
     }
     std::vector<const char*> color_ptrs;
     color_ptrs.reserve(color_list.size());
@@ -518,7 +528,7 @@ int main(int argc, char** argv) {
             std::string path = join_svg(dir, rec.stem);
             if (!write_naview_svg(path.c_str(), rec.label.c_str(), rec.sequence.c_str(),
                                   rec.db.c_str(), circular, &rec.layout, wrap, graph_width,
-                                  naview_only, rainbow, palette, npalette)) {
+                                  naview_only, rainbow, palette, npalette, color_window)) {
                 write_fails[static_cast<size_t>(worker)].index = i;
                 write_fails[static_cast<size_t>(worker)].err_no = errno;
                 write_fails[static_cast<size_t>(worker)].path = std::move(path);

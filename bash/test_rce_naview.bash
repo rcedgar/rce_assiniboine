@@ -30,6 +30,21 @@ if "$root/build-linux/rce_naview" --rainbow --colors red \
 	echo "expected --rainbow and --colors together to fail"
 	exit 1
 fi
+printf 'guanine\tGGGGGGGGG\t.........\n' > "$root/build-linux/naview_test_out/guanine.tsv"
+"$root/build-linux/rce_naview" --color-window 20 --naview-only \
+	--out-dir "$root/build-linux/naview_test_out" \
+	"$root/build-linux/naview_test_out/guanine.tsv"
+grep -q '#ffa360' "$root/build-linux/naview_test_out/guanine.svg"
+if grep -q 'hsl(' "$root/build-linux/naview_test_out/guanine.svg"; then
+	echo "expected --color-window to replace rainbow colors"
+	exit 1
+fi
+if "$root/build-linux/rce_naview" --color-window 20 --rainbow \
+	--out-dir "$root/build-linux/naview_test_out" \
+	"$root/build-linux/naview_test_out/guanine.tsv"; then
+	echo "expected --color-window and --rainbow together to fail"
+	exit 1
+fi
 if "$root/build-linux/rce_naview" --colors 'notacolor' \
 	--out-dir "$root/build-linux/naview_test_out" \
 	"$root/build-linux/naview_test_out/in.tsv"; then

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="72.31" height="71.70" viewBox="0 0 72.31 71.70">
+<g id="naview">
+<polygon points="60.55,30.46 52.46,17.03 36.16,11.10 19.85,17.03 11.17,32.06 14.19,49.15 27.48,60.30 44.83,60.30 57.03,50.45 50.73,42.95 41.48,51.09 30.83,51.09 22.67,44.25 20.83,33.76 26.15,24.54 36.16,20.90 46.16,24.54 52.07,35.36 " fill="#ffa360" fill-opacity="0.10" stroke="none"/>
+<line x1="56.31" y1="32.91" x2="49.31" y2="20.79" stroke="#ffa360" stroke-width="1.25" stroke-linecap="round"/>
+<line x1="49.31" y1="20.79" x2="36.16" y2="16.00" stroke="#ffa360" stroke-width="1.25" stroke-linecap="round"/>
+<line x1="36.16" y1="16.00" x2="23.00" y2="20.79" stroke="#ffa360" stroke-width="1.25" stroke-linecap="round"/>
+<line x1="23.00" y1="20.79" x2="16.00" y2="32.91" stroke="#ffa360" stroke-width="1.25" stroke-linecap="round"/>
+<line x1="16.00" y1="32.91" x2="18.43" y2="46.70" stroke="#ffa360" stroke-width="1.25" stroke-linecap="round"/>
+<line x1="18.43" y1="46.70" x2="29.16" y2="55.70" stroke="#ffa360" stroke-width="1.25" stroke-linecap="round"/>
+<line x1="29.16" y1="55.70" x2="43.16" y2="55.70" stroke="#ffa360" stroke-width="1.25" stroke-linecap="round"/>
+<line x1="43.16" y1="55.70" x2="53.88" y2="46.70" stroke="#ffa360" stroke-width="1.25" stroke-linecap="round"/>
+<text x="56.31" y="32.91" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="9.00" fill="#ffa360">G</text>
+<text x="49.31" y="20.79" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="9.00" fill="#ffa360">G</text>
+<text x="36.16" y="16.00" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="9.00" fill="#ffa360">G</text>
+<text x="23.00" y="20.79" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="9.00" fill="#ffa360">G</text>
+<text x="16.00" y="32.91" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="9.00" fill="#ffa360">G</text>
+<text x="18.43" y="46.70" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="9.00" fill="#ffa360">G</text>
+<text x="29.16" y="55.70" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="9.00" fill="#ffa360">G</text>
+<text x="43.16" y="55.70" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="9.00" fill="#ffa360">G</text>
+<text x="53.88" y="46.70" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="9.00" fill="#ffa360">G</text>
+</g>
+</svg>

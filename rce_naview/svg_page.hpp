@@ -11,9 +11,12 @@
 // The structure is still scaled to the dot-bracket row width.
 // rainbow assigns one hue per group. Otherwise groups cycle through palette, or
 // through the built-in 10-color palette when npalette is 0.
+// color_window > 0 paints each base from the composition of that many bases
+// centered on it (wrapping when circular). It replaces rainbow and palette colors.
 bool write_naview_svg(const char* path, const char* label, const char* sequence, const char* db,
                       bool circular, const NavLayout* layout, int wrap, double graph_width,
-                      bool naview_only, bool rainbow, const char* const* palette, int npalette);
+                      bool naview_only, bool rainbow, const char* const* palette, int npalette,
+                      int color_window);
 
 // True when text is a color SVG accepts: a keyword, #RGB[A], #RRGGBB[AA],
 // rgb()/rgba(), or hsl()/hsla().

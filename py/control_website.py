@@ -13,10 +13,16 @@ with nowhere to go stays put and is gray. Arrow keys and Home follow
 those buttons.
 
 The index thumbnail for a family is chosen with random.Random(1).
+
+--color-window N uses figures drawn by rce_naview --color-window N.
+Each base is colored from the composition of that many bases centered
+on it. The site is written to big_control_website_fcolors/. The option
+is off by default.
 """
 
 from __future__ import annotations
 
+import argparse
 import html
 import os
 import random
@@ -29,6 +35,7 @@ _LENGTHS = _ROOT / "big_output" / "controls.seqlengths"
 _FULL = _ROOT / "big_control_svgs_100_per_family"
 _THUMB = _ROOT / "big_control_thumbnail_pngs"
 _HTML = _ROOT / "big_control_website"
+_HTML_FCOLORS = _ROOT / "big_control_website_fcolors"
 _PER_FAMILY = 100
 _COLUMNS = 5
 _FAMILY_CHARS = set(
@@ -280,7 +287,7 @@ def _load_lengths(path: Path) -> dict[str, int]:
     return lengths
 
 
-def _load_sequences(labels_path: Path, lengths: dict[str, int]) -> list[Seq]:
+def _load_sequences(labels_path: Path, lengths: dict[str, int], full_dir: Path, thumb_dir: Path) -> list[Seq]:
     sequences: list[Seq] = []
     seen: set[str] = set()
     stems: dict[str, str] = {}
@@ -300,8 +307,8 @@ def _load_sequences(labels_path: Path, lengths: dict[str, int]) -> list[Seq]:
             if previous is not None:
                 _die("ERROR: %s and %s both write %s.svg" % (previous, label, stem))
             stems[stem] = label
-            full = _FULL / ("%s.svg" % stem)
-            thumb = _THUMB / ("%s.png" % stem)
+            full = full_dir / ("%s.svg" % stem)
+            thumb = thumb_dir / ("%s.png" % stem)
             if not full.is_file():
                 _die("ERROR: missing %s" % full)
             if not thumb.is_file():
@@ -310,6 +317,16 @@ def _load_sequences(labels_path: Path, lengths: dict[str, int]) -> list[Seq]:
     if not sequences:
         _die("ERROR: no labels in %s" % labels_path)
     return sequences
+
+
+def _thumb_open(href: str, kind: str | None = None, title: str | None = None) -> str:
+    attrs = []
+    if kind:
+        attrs.append('class="%s"' % kind)
+    attrs.append('href="%s"' % html.escape(href, quote=True))
+    if title is not None:
+        attrs.append('title="%s"' % html.escape(title, quote=True))
+    return "<a %s>" % " ".join(attrs)
 
 
 def _group(sequences: list[Seq]) -> dict[str, list[Seq]]:
@@ -420,7 +437,13 @@ def _rows(count: int) -> int:
     return (count + _COLUMNS - 1) // _COLUMNS
 
 
-def _build(htmldir: Path, groups: dict[str, list[Seq]]) -> None:
+def _build(
+    htmldir: Path,
+    groups: dict[str, list[Seq]],
+    full_dir: Path,
+    thumb_dir: Path,
+    kind_tint: bool,
+) -> None:
     htmldir.mkdir(parents=True, exist_ok=True)
     _clear_html(htmldir)
     families = sorted(groups, key=_family_sort_key)
@@ -434,14 +457,15 @@ def _build(htmldir: Path, groups: dict[str, list[Seq]]) -> None:
         if family.startswith("DECOY_") and not started_decoy:
             cards.append('<div class="rowbreak"></div>')
             started_decoy = True
-        kind = "vle" if family.startswith("VLE_") else "decoy"
+        kind = None
+        if kind_tint:
+            kind = "vle" if family.startswith("VLE_") else "decoy"
         pick = picks[family]
-        src = _svg_src(_THUMB / ("%s.png" % pick.stem), htmldir)
+        src = _svg_src(thumb_dir / ("%s.png" % pick.stem), htmldir)
         cards.append(
-            '<a class="%s" href="%s"><img src="%s" alt="%s"><span class="name">%s</span></a>'
+            "%s<img src=\"%s\" alt=\"%s\"><span class=\"name\">%s</span></a>"
             % (
-                kind,
-                html.escape(_family_page(family), quote=True),
+                _thumb_open(_family_page(family), kind=kind),
                 html.escape(src, quote=True),
                 html.escape(family),
                 html.escape(family),
@@ -463,12 +487,11 @@ def _build(htmldir: Path, groups: dict[str, list[Seq]]) -> None:
         prev_href, next_href = _neighbors(family_hrefs, family_index)
         cells = []
         for seq in members:
-            src = _svg_src(_THUMB / ("%s.png" % seq.stem), htmldir)
+            src = _svg_src(thumb_dir / ("%s.png" % seq.stem), htmldir)
             cells.append(
-                '<a href="%s" title="%s"><img src="%s" alt="%s"></a>'
+                '%s<img src="%s" alt="%s"></a>'
                 % (
-                    html.escape(_sequence_page(seq.stem), quote=True),
-                    html.escape(seq.label, quote=True),
+                    _thumb_open(_sequence_page(seq.stem), title=seq.label),
                     html.escape(src, quote=True),
                     html.escape(seq.label),
                 )
@@ -484,9 +507,13 @@ def _build(htmldir: Path, groups: dict[str, list[Seq]]) -> None:
                 ),
                 "<h1>%s</h1>" % html.escape(family),
                 "</div>",
-                '<div class="thumbs %s" style="grid-template-rows: repeat(%d, minmax(0, 1fr))">%s</div>'
+                '<div class="%s" style="grid-template-rows: repeat(%d, minmax(0, 1fr))">%s</div>'
                 % (
-                    "vle" if family.startswith("VLE_") else "decoy",
+                    "thumbs vle"
+                    if kind_tint and family.startswith("VLE_")
+                    else "thumbs decoy"
+                    if kind_tint
+                    else "thumbs",
                     _rows(len(members)),
                     "".join(cells),
                 ),
@@ -502,7 +529,7 @@ def _build(htmldir: Path, groups: dict[str, list[Seq]]) -> None:
         up_href = _family_page(family)
         for seq_index, seq in enumerate(members):
             seq_prev, seq_next = _neighbors(sequence_hrefs, seq_index)
-            src = _svg_src(_FULL / ("%s.svg" % seq.stem), htmldir)
+            src = _svg_src(full_dir / ("%s.svg" % seq.stem), htmldir)
             crumb = '<p class="crumb"><a href="%s">%s</a></p>' % (
                 html.escape(up_href, quote=True),
                 html.escape(family),
@@ -528,17 +555,36 @@ def _build(htmldir: Path, groups: dict[str, list[Seq]]) -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Build the control-sequence HTML site.")
+    parser.add_argument(
+        "--color-window",
+        type=int,
+        default=0,
+        help="Use composition-colored figures for this window and write big_control_website_fcolors/",
+    )
+    args = parser.parse_args()
+    if args.color_window < 0:
+        _die("ERROR: --color-window must be >= 0")
     if not _LABELS.is_file():
         _die("ERROR: missing %s" % _LABELS)
     if not _LENGTHS.is_file():
         _die("ERROR: missing %s" % _LENGTHS)
+    if args.color_window:
+        tag = "w%d" % args.color_window
+        full_dir = _ROOT / ("big_control_svgs_100_per_family_%s" % tag)
+        thumb_dir = _ROOT / ("big_control_thumbnail_pngs_%s" % tag)
+        htmldir = _HTML_FCOLORS
+    else:
+        full_dir = _FULL
+        thumb_dir = _THUMB
+        htmldir = _HTML
     lengths = _load_lengths(_LENGTHS)
-    sequences = _load_sequences(_LABELS, lengths)
+    sequences = _load_sequences(_LABELS, lengths, full_dir, thumb_dir)
     groups = _group(sequences)
-    _build(_HTML, groups)
+    _build(htmldir, groups, full_dir, thumb_dir, kind_tint=not args.color_window)
     sys.stdout.write(
         "wrote %d sequence pages in %d families to %s\n"
-        % (len(sequences), len(groups), _HTML)
+        % (len(sequences), len(groups), htmldir)
     )
 
 

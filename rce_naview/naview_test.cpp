@@ -355,10 +355,10 @@ static void test_svg_smoke() {
     const char* seq = "GGGAAACCC";
     NavLayout lay = must_layout(db, false);
     const char* path = "build-linux/naview_test_out/smoke.svg";
-    expect(write_naview_svg(path, "A&B", seq, db, false, &lay, 60, 1.0, false, false, 0, 0),
+    expect(write_naview_svg(path, "A&B", seq, db, false, &lay, 60, 1.0, false, false, 0, 0, 0),
            "svg write");
     const char* only_path = "build-linux/naview_test_out/only.svg";
-    expect(write_naview_svg(only_path, "A&B", seq, db, false, &lay, 60, 1.0, true, false, 0, 0),
+    expect(write_naview_svg(only_path, "A&B", seq, db, false, &lay, 60, 1.0, true, false, 0, 0, 0),
            "naview only");
     expect(!file_contains(only_path, "id=\"title\""), "only omits title");
     expect(!file_contains(only_path, "id=\"dotbracket\""), "only omits dot-bracket");
@@ -366,9 +366,9 @@ static void test_svg_smoke() {
     expect(file_contains(only_path, "id=\"naview\""), "only keeps naview");
     const char* fit_path = "build-linux/naview_test_out/fit.svg";
     const char* fit_only_path = "build-linux/naview_test_out/fit_only.svg";
-    expect(write_naview_svg(fit_path, "A&B", seq, db, false, &lay, 2, 1.0, false, false, 0, 0),
+    expect(write_naview_svg(fit_path, "A&B", seq, db, false, &lay, 2, 1.0, false, false, 0, 0, 0),
            "fitted write");
-    expect(write_naview_svg(fit_only_path, "A&B", seq, db, false, &lay, 2, 1.0, true, false, 0, 0),
+    expect(write_naview_svg(fit_only_path, "A&B", seq, db, false, &lay, 2, 1.0, true, false, 0, 0, 0),
            "fitted only");
     double fit_dx = 0.0;
     double fit_dy = 0.0;
@@ -394,17 +394,24 @@ static void test_svg_smoke() {
     expect(file_contains(path, "#c62828"), "default red");
     expect(file_contains(path, "#1565c0"), "default blue");
     const char* rain = "build-linux/naview_test_out/rainbow.svg";
-    expect(write_naview_svg(rain, "A&B", seq, db, false, &lay, 60, 1.0, false, true, 0, 0),
+    expect(write_naview_svg(rain, "A&B", seq, db, false, &lay, 60, 1.0, false, true, 0, 0, 0),
            "rainbow write");
     expect(file_contains(rain, "hsl(0.00, 72%, 40%)"), "rainbow first hue");
     const char* custom_cols[] = {"#112233", "lime"};
     const char* custom = "build-linux/naview_test_out/custom.svg";
     expect(write_naview_svg(custom, "A&B", seq, db, false, &lay, 60, 1.0, false, false, custom_cols,
-                            2),
+                            2, 0),
            "custom write");
     expect(file_contains(custom, "#112233"), "custom first");
     expect(file_contains(custom, "lime"), "custom second");
     check_pairs(lay, "smoke hairpin");
+    const char* window_path = "build-linux/naview_test_out/window.svg";
+    NavLayout guanine = must_layout(".........", false);
+    expect(write_naview_svg(window_path, "G", "GGGGGGGGG", ".........", false, &guanine, 60, 1.0,
+                            true, false, 0, 0, 20),
+           "window write");
+    expect(file_contains(window_path, "#ffa360"), "all-G composition");
+    expect(!file_contains(window_path, "hsl("), "window is not rainbow");
 }
 
 static void test_svg_color() {
@@ -464,7 +471,7 @@ static void test_len1_and_wrap_text() {
 #endif
     const char* path = "build-linux/naview_test_out/wrap.svg";
     expect(write_naview_svg(path, "wrap", seq.c_str(), db.c_str(), false, &dots, 60, 1.0, false,
-                            false, 0, 0),
+                            false, 0, 0, 0),
            "wrap svg");
     expect(file_contains(path, "textLength=\"432.00\""), "full row width");
     expect(file_contains(path, "textLength=\"7.20\""), "short row width");
