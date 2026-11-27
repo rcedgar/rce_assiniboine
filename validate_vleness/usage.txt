@@ -1,0 +1,26 @@
+usage: vleness [--threads N] [--rnafold | --tsv I,J | --lsc]
+               [--keep-full-label] [--log FILE] [--maxerror N]
+               input output.tsv
+
+Score each circular dot-bracket. pct_bulge is the percent of the circle
+in unpaired gaps inside composite stems (helices joined across at most
+five unpaired nucleotides on a strand). S = (pct_bulge - 12) / 5.21.
+pct_bulge is printed with one decimal place and S with four.
+
+The first byte selects the format: '>' is RNAfold, anything else is TSV.
+--rnafold forces three-line RNAfold records (label, sequence, structure).
+A trailing Vienna energy on the structure line is ignored. The label is
+cut at the first whitespace unless --keep-full-label is set.
+--tsv I,J reads a TSV whose 1-based columns are the label and the
+dot-bracket (default 1,2). A first row whose structure field is not a
+dot-bracket is a header and is skipped.
+--lsc reads label, MFE, dot-bracket, MFE, dot-bracket and writes
+label, length, pct_bulge1, pct_bulge2, S1, S2, max(S1, S2) with no header.
+LSC is also chosen automatically when the first TSV row has dot-brackets
+in fields 3 and 5. --rnafold, --tsv, and --lsc are mutually exclusive.
+
+Format problems are warnings on stderr. --log FILE also records them,
+with the start time and the finish time. The run stops after more than
+--maxerror warnings (default 1000) and exits non-zero. Rows accepted
+before that stop are still written.
+--threads defaults to the processor count in /proc/cpuinfo.
