@@ -1,18 +1,18 @@
 VLE discriminator score.
-Objective: maximize family-weighted recall at precision >= 0.50.
+Objective: maximize family-weighted AUC.
 Each VLE family with at least 20 circles has the same total weight.
 Those totals, plus weight 1 on smaller VLE families, sum to the VLE row count.
 VLE families below 20 keep weight 1 per row.
 Each DECOY family has the same total weight, and those totals sum to the DECOY row count.
 Precision counts a decoy by its row weight. The 3.4% VLE prevalence therefore stays inside the cutoff.
 z(x) = (x - train_median) / train_IQR. Counts and lengths are log1p before that z-score.
-Each training fold orients a feature before selection. The sign is -1 when -z has the better family-weighted recall at precision >= 0.50. A tie keeps +1.
+Each training fold orients a feature before selection. The sign is -1 when the family-weighted AUC of +z is below 0.5. A tie keeps +1.
 A feature is eligible when its training IQR is positive.
 nr_bases is excluded. An exact duplicate column is dropped.
 After a term is accepted, a remaining candidate is dropped when its family-weighted absolute Pearson correlation with that term is at least 0.90.
-Forward selection adds the mix that most raises training recall, and stops when recall does not rise.
+Forward selection adds the mix that most raises training AUC, and stops when AUC does not rise.
 For each voting family, k is chosen from the other voting families.
-A longer prefix is kept when the unweighted mean of the held-out recall gains exceeds its standard error.
+A longer prefix is kept when the unweighted mean of the held-out AUC gains exceeds its standard error.
 The published k is the median of those choices. An even median rounds down.
 The published formula is that prefix of the all-data path, then a short Hooke-Jeeves polish.
 Validation holds out one VLE family at a time. Decoy rows stay in every training set.
@@ -27,8 +27,8 @@ classes
 VLE	22812
 DECOY	649778
 voting_families	4
-published_k	2
-median_k	2
+published_k	1
+median_k	1
 
 family weights
 VLE	ambivirus	n 617	total_weight 5701.75	share 0.249945
@@ -49,90 +49,90 @@ DECOY	polyomavirus	n 3044	total_weight 59070.7	share 0.0909091
 DECOY	satellite	n 1000	total_weight 59070.7	share 0.0909091
 
 features
-bKeto	selected	rho -0.0771627	sign -1
-bulge_length_L2_norm	correlated with nr_unpaired_bases	rho 0.883711	sign +1
+bKeto	not selected	rho -0.0771627	sign -1
+bulge_length_L2_norm	correlated with excess_bulge_nr_bases	rho 0.883711	sign +1
 bulge_to_stem_ratio	correlated with pct_bulge	rho -0.22381	sign +1
-excess_bulge_nr_bases	correlated with nr_unpaired_bases	rho 0.883708	sign +1
+excess_bulge_nr_bases	not selected	rho 0.883708	sign +1
 longest_composite_stem_nr_paired_bases	not selected	rho 0.617105	sign +1
 longest_composite_stem_pct_paired_bases	not selected	rho 0.00535538	sign -1
 longest_composite_stem_pct_total_bases	not selected	rho -0.761932	sign +1
 longest_composite_stem_total_nr_bases	correlated with longest_composite_stem_nr_paired_bases	rho 0.581892	sign +1
 longest_stem_nr_paired_bases	not selected	rho 0.731323	sign -1
 longest_stem_pct_paired_bases	iqr0	rho 0.00576435	sign +1
-longest_stem_pct_total_bases	not selected	rho -0.943171	sign -1
+longest_stem_pct_total_bases	not selected	rho -0.943171	sign +1
 longest_stem_total_nr_bases	duplicate of longest_stem_nr_paired_bases	rho 0.731323	sign +1
 max_bulge_len	not selected	rho 0.513719	sign -1
-nBranch	correlated with nr_unpaired_bases	rho 0.885659	sign -1
+nBranch	not selected	rho 0.885659	sign -1
 nr_bases	length	rho 1	sign +1
-nr_bases_symmetric_loops	correlated with nr_unpaired_bases	rho 0.900334	sign +1
-nr_bases_true_bulges	not selected	rho 0.841691	sign +1
-nr_excess_bulges	correlated with nr_unpaired_bases	rho 0.890408	sign +1
-nr_paired_bases	correlated with nr_unpaired_bases	rho 0.992696	sign +1
-nr_unpaired_bases	not selected	rho 0.982221	sign -1
+nr_bases_symmetric_loops	correlated with excess_bulge_nr_bases	rho 0.900334	sign +1
+nr_bases_true_bulges	correlated with excess_bulge_nr_bases	rho 0.841691	sign +1
+nr_excess_bulges	correlated with excess_bulge_nr_bases	rho 0.890408	sign +1
+nr_paired_bases	correlated with excess_bulge_nr_bases	rho 0.992696	sign -1
+nr_unpaired_bases	correlated with excess_bulge_nr_bases	rho 0.982221	sign -1
 pB	not selected	rho 0.0864174	sign +1
 pDominantSpoke	not selected	rho -0.274719	sign +1
 pF	not selected	rho 0.224754	sign -1
-pH	selected	rho -0.328975	sign -1
+pH	not selected	rho -0.328975	sign -1
 pI	not selected	rho -0.156428	sign +1
 pJunction	not selected	rho 0.274847	sign -1
 pLongestPairShare	not selected	rho -0.818407	sign +1
-pLongestRod	not selected	rho -0.758852	sign +1
-pOffRod	not selected	rho 0.757223	sign -1
-pOnRod	not selected	rho -0.757095	sign +1
+pLongestRod	correlated with pRod	rho -0.758852	sign +1
+pOffRod	correlated with pRod	rho 0.757223	sign -1
+pOnRod	correlated with pRod	rho -0.757095	sign +1
 pRod	not selected	rho -0.656172	sign +1
 pS	not selected	rho 0.355057	sign +1
 pSplitStem	not selected	rho 0.818534	sign -1
-pct_bulge	not selected	rho -0.125472	sign +1
+pct_bulge	selected	rho -0.125472	sign +1
 pct_excess_bulges	correlated with pct_bulge	rho -0.107258	sign +1
 pct_paired_bases	duplicate of pS	rho 0.355057	sign +1
 pct_symmetric_loops	correlated with pct_bulge	rho -0.11206	sign +1
 pct_true_bulges	not selected	rho 0.0545713	sign +1
-total_nr_bulge_bases	correlated with nr_unpaired_bases	rho 0.920289	sign +1
+total_nr_bulge_bases	correlated with excess_bulge_nr_bases	rho 0.920289	sign +1
 uKeto	not selected	rho -0.107026	sign +1
 
 all-data path
-k 1	pH	train_weighted_recall 0.978899
-k 2	bKeto	train_weighted_recall 0.987659
-k 3	pct_bulge	train_weighted_recall 0.992203
-k 4	longest_composite_stem_nr_paired_bases	train_weighted_recall 0.993036
-k 5	pF	train_weighted_recall 0.993238
-k 6	uKeto	train_weighted_recall 0.993948
-k 7	longest_stem_pct_total_bases	train_weighted_recall 0.994148
-k 8	nr_unpaired_bases	train_weighted_recall 0.994589
+k 1	pct_bulge	train_weighted_auc 0.993527	train_weighted_recall 0.978538
+k 2	longest_composite_stem_nr_paired_bases	train_weighted_auc 0.997484	train_weighted_recall 0.991229
+k 3	bKeto	train_weighted_auc 0.99795	train_weighted_recall 0.992755
+k 4	pRod	train_weighted_auc 0.998209	train_weighted_recall 0.991592
+k 5	pH	train_weighted_auc 0.998291	train_weighted_recall 0.992626
+k 6	pF	train_weighted_auc 0.998335	train_weighted_recall 0.992121
+k 7	uKeto	train_weighted_auc 0.998364	train_weighted_recall 0.993043
+k 8	excess_bulge_nr_bases	train_weighted_auc 0.998381	train_weighted_recall 0.993857
+k 9	nBranch	train_weighted_auc 0.998426	train_weighted_recall 0.992907
+k 10	pS	train_weighted_auc 0.998427	train_weighted_recall 0.994247
+k 11	pI	train_weighted_auc 0.998453	train_weighted_recall 0.992823
 
 formula
-z1 = (bKeto - 0.115) / 0.0523
-z24 = (pH - 12.3) / 5.1
-S = 0.31943*(-z1) + 0.68057*(-z24)
-threshold = 0.473217
-all-data train weighted recall 0.9877 at precision 0.5001
-polish_evals	37
+z34 = (pct_bulge - 12) / 5.21
+S = 1*z34
+threshold = 0.710173
+all-data train weighted auc 0.9935, recall 0.9785 at precision 0.5012
+polish_evals	1
 
 complexity
-ambivirus	chosen_k 4	path	pct_bulge	longest_composite_stem_total_nr_bases	bKeto	pS	nBranch	pH	uKeto	pF	pB
-k 1	obelisk 0.7468	pospiviroid 0.9838	ribozyvirus 0.9912
-k 2	obelisk 0.9689	pospiviroid 0.9882	ribozyvirus 0.9912	mean_gain 0.0754881	se 0.0733092	keep yes
-k 3	obelisk 0.9735	pospiviroid 0.9887	ribozyvirus 0.9945	mean_gain 0.00283013	se 0.00121404	keep yes
-k 4	obelisk 0.9794	pospiviroid 0.9893	ribozyvirus 0.9945	mean_gain 0.00214102	se 0.00188184	keep yes
-k 5	obelisk 0.9516	pospiviroid 0.9896	ribozyvirus 0.9945	mean_gain -0.00912991	se 0.00932969	keep no
-obelisk	chosen_k 1	path	pH	pct_bulge	longest_composite_stem_nr_paired_bases	bKeto	pF	pS	pI	bulge_length_L2_norm	pRod
-k 1	ambivirus 0.9887	pospiviroid 0.9424	ribozyvirus 0.9846
-k 2	ambivirus 0.9806	pospiviroid 0.9524	ribozyvirus 0.9890	mean_gain 0.00208504	se 0.00534022	keep no
-pospiviroid	chosen_k 3	path	longest_composite_stem_total_nr_bases	pct_bulge	bKeto	pS	uKeto	pI	longest_stem_nr_paired_bases	pF	longest_stem_pct_total_bases	pH
-k 1	ambivirus 0.9919	obelisk 0.8117	ribozyvirus 0.9835
-k 2	ambivirus 0.9951	obelisk 0.8892	ribozyvirus 0.9890	mean_gain 0.0287398	se 0.0243746	keep yes
-k 3	ambivirus 0.9968	obelisk 0.9138	ribozyvirus 0.9901	mean_gain 0.00910308	se 0.0077435	keep yes
-k 4	ambivirus 0.9968	obelisk 0.9147	ribozyvirus 0.9901	mean_gain 0.000290973	se 0.000290973	keep no
-ribozyvirus	chosen_k 2	path	pH	longest_composite_stem_total_nr_bases	pct_bulge	bKeto	longest_stem_nr_paired_bases	pS	uKeto	nr_unpaired_bases
-k 1	ambivirus 0.9919	obelisk 0.9091	pospiviroid 0.9774
-k 2	ambivirus 0.9984	obelisk 0.9685	pospiviroid 0.9812	mean_gain 0.0231858	se 0.0181039	keep yes
-k 3	ambivirus 0.9984	obelisk 0.9676	pospiviroid 0.9879	mean_gain 0.00196517	se 0.00241481	keep no
+ambivirus	chosen_k 2	path	pct_bulge	longest_composite_stem_nr_paired_bases	nBranch	bKeto	pS	pH	longest_stem_nr_paired_bases	pRod	nr_excess_bulges	pF	uKeto
+k 1	obelisk 0.9397	pospiviroid 0.9769	ribozyvirus 0.9627
+k 2	obelisk 0.9713	pospiviroid 0.9891	ribozyvirus 0.9955	mean_gain 0.0255398	se 0.0066643	keep yes
+k 3	obelisk 0.9533	pospiviroid 0.9896	ribozyvirus 0.9951	mean_gain -0.00596174	se 0.00604602	keep no
+obelisk	chosen_k 4	path	pRod	excess_bulge_nr_bases	pct_bulge	bKeto	pF	longest_composite_stem_pct_paired_bases	longest_stem_pct_total_bases	pI	pS	uKeto	nBranch	longest_composite_stem_total_nr_bases
+k 1	ambivirus 0.9448	pospiviroid 0.9874	ribozyvirus 0.9928
+k 2	ambivirus 0.9669	pospiviroid 0.9922	ribozyvirus 0.9950	mean_gain 0.00970175	se 0.00624121	keep yes
+k 3	ambivirus 0.9734	pospiviroid 0.9932	ribozyvirus 0.9961	mean_gain 0.00287402	se 0.00182329	keep yes
+k 4	ambivirus 0.9794	pospiviroid 0.9933	ribozyvirus 0.9968	mean_gain 0.0022672	se 0.00187787	keep yes
+k 5	ambivirus 0.9794	pospiviroid 0.9935	ribozyvirus 0.9968	mean_gain 6.10481e-05	se 7.83174e-05	keep no
+pospiviroid	chosen_k 1	path	pH	pct_bulge	bKeto	longest_composite_stem_total_nr_bases	nBranch	longest_stem_pct_total_bases	uKeto	pRod	pF	nr_excess_bulges	pI
+k 1	ambivirus 0.9976	obelisk 0.9838	ribozyvirus 0.9938
+k 2	ambivirus 0.9902	obelisk 0.9763	ribozyvirus 0.9947	mean_gain -0.00463609	se 0.00274996	keep no
+ribozyvirus	chosen_k 1	path	pH	pct_bulge	longest_composite_stem_total_nr_bases	bKeto	pF	uKeto	nBranch	nr_excess_bulges	pRod
+k 1	ambivirus 0.9976	obelisk 0.9838	pospiviroid 0.9919
+k 2	ambivirus 0.9905	obelisk 0.9763	pospiviroid 0.9934	mean_gain -0.00433785	se 0.00292196	keep no
 
-voting-family mean holdout recall 0.9704, stem recall 0.9622
+voting-family mean holdout recall 0.9763, stem recall 0.9622
 
 holdouts
-ambivirus	n 617	k 4	vote yes	holdout_recall 0.9968	stem_recall 0.9935	train_weighted_recall 0.9924
-obelisk	n 13747	k 1	vote yes	holdout_recall 0.9091	stem_recall 0.9457	train_weighted_recall 0.9824
-pospiviroid	n 7535	k 3	vote yes	holdout_recall 0.9887	stem_recall 0.9262	train_weighted_recall 0.9909
-ribozyvirus	n 908	k 2	vote yes	holdout_recall 0.9868	stem_recall 0.9835	train_weighted_recall 0.9870
-zetavirus	n 5	k 2	vote no	holdout_recall 1.0000	stem_recall 1.0000	train_weighted_recall 0.9877
+ambivirus	n 617	k 2	vote yes	holdout_recall 0.9968	stem_recall 0.9935	train_weighted_recall 0.9893
+obelisk	n 13747	k 4	vote yes	holdout_recall 0.9434	stem_recall 0.9457	train_weighted_recall 0.9879
+pospiviroid	n 7535	k 1	vote yes	holdout_recall 0.9782	stem_recall 0.9262	train_weighted_recall 0.9689
+ribozyvirus	n 908	k 1	vote yes	holdout_recall 0.9868	stem_recall 0.9835	train_weighted_recall 0.9755
+zetavirus	n 5	k 1	vote no	holdout_recall 1.0000	stem_recall 1.0000	train_weighted_recall 0.9785

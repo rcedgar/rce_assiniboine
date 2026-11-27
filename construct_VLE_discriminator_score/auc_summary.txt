@@ -5,10 +5,10 @@ AUC is the unweighted Mann-Whitney statistic. Ties use the average rank.
 stem_auc is the oriented log1p(longest_composite_stem_total_nr_bases) column, with the same positives and negatives.
 
 family	n	k	auc	stem_auc
-ambivirus	617	4	0.9931	0.9966
-obelisk	13747	1	0.9838	0.9916
-pospiviroid	7535	3	0.9911	0.9811
-ribozyvirus	908	2	0.9944	0.9946
-zetavirus	5	2	0.9946	0.9951
+ambivirus	617	2	0.9911	0.9966
+obelisk	13747	4	0.9793	0.9916
+pospiviroid	7535	1	0.9919	0.9811
+ribozyvirus	908	1	0.9938	0.9946
+zetavirus	5	1	0.9560	0.9951
 
-voting-family mean auc 0.9906, stem auc 0.9910
+voting-family mean auc 0.9890, stem auc 0.9910

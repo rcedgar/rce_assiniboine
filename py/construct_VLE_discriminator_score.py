@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Fit a closed-form VLE score and a precision-0.5 operating point.
+"""Fit a closed-form VLE score by family-weighted AUC.
 
 S is a nonnegative weighted sum of robust z-scores. Each training fold
-multiplies a feature by -1 when that direction has the better recall at
-precision >= 0.5. Counts and lengths are log1p before the z-score. nr_bases
-and exact duplicate columns stay out. After a term is accepted, a remaining
-candidate whose family-weighted absolute Pearson correlation with it is at
-least 0.90 is dropped. Forward selection adds a term only while
-family-weighted recall at precision >= 0.5 rises. The number of terms is the
-median length chosen by leave-one-VLE-family-out. The published formula is
-fit on every row. Validation holds out one VLE family at a time.
+multiplies a feature by -1 when the family-weighted AUC of +z is below 0.5.
+Counts and lengths are log1p before the z-score. nr_bases and exact duplicate
+columns stay out. After a term is accepted, a remaining candidate whose
+family-weighted absolute Pearson correlation with it is at least 0.90 is
+dropped. Forward selection adds a term only while family-weighted AUC rises.
+The number of terms is the median length chosen by leave-one-VLE-family-out,
+using each held-out family's AUC. The published formula is fit on every row.
+The call threshold is still the precision-0.5 point. Validation holds out one
+VLE family at a time.
 """
 
 from __future__ import annotations
@@ -71,6 +72,7 @@ class _Step(NamedTuple):
     feature: int
     weights: np.ndarray
     train_point: _Point
+    train_auc: float
 
 
 class _View(NamedTuple):
@@ -105,7 +107,7 @@ class _Outer(NamedTuple):
     weights: np.ndarray
     path_features: tuple[int, ...]
     inner_names: tuple[str, ...]
-    inner_recalls: tuple[tuple[float, ...], ...]
+    inner_aucs: tuple[tuple[float, ...], ...]
     gain_rows: tuple[tuple[int, float, float, bool], ...]
     voting: bool
     auc: float
@@ -123,6 +125,7 @@ class _Model(NamedTuple):
     k: int
     requested_k: int
     sign: np.ndarray
+    train_auc: float
 
 
 class _Candidate(NamedTuple):
@@ -134,6 +137,7 @@ class _Candidate(NamedTuple):
     point: _Point
     peak_precision: float
     peak_recall: float
+    auc: float
 
 
 def _die(message: str) -> None:
@@ -319,23 +323,11 @@ def _orient_columns(
     is_vle: np.ndarray,
     row_weight: np.ndarray,
 ) -> None:
-    """Flip a column when -z wins the training operating point. A tie stays positive."""
-    weights = np.zeros(z.shape[1], dtype=np.float64)
+    """Flip a column when its family-weighted AUC is below 0.5. A tie stays positive."""
     for feature in columns:
         column = z[:, feature]
-        pos_point = _point_at_precision(column, is_vle, _TARGET_PRECISION, row_weight)
-        neg_point = _point_at_precision(-column, is_vle, _TARGET_PRECISION, row_weight)
-        pos_peak_precision, pos_peak_recall = _peak(column, is_vle, row_weight)
-        neg_peak_precision, neg_peak_recall = _peak(-column, is_vle, row_weight)
-        positive = _Candidate(
-            pos_point.recall, pos_point.precision, feature, 1.0, weights, pos_point,
-            pos_peak_precision, pos_peak_recall,
-        )
-        negative = _Candidate(
-            neg_point.recall, neg_point.precision, feature, 1.0, weights, neg_point,
-            neg_peak_precision, neg_peak_recall,
-        )
-        if _prefer(negative, positive):
+        _recall, _precision, _fpr, _score, auc = _ranked_curves(column, is_vle, row_weight)
+        if auc < 0.5 - 1e-12:
             sign[feature] = -1.0
             z[:, feature] = -column
 
@@ -387,10 +379,31 @@ def _average_ranks(values: np.ndarray) -> np.ndarray:
     return ranks
 
 
+def _auc_from_groups(tp: np.ndarray, fp: np.ndarray, pos_mass: float, neg_mass: float) -> float:
+    """Weighted Mann-Whitney AUC from cumulative class weights at each tie group.
+
+    Groups are in descending score order. A VLE wins the decoy weight below
+    its group and half the decoy weight tied with it.
+    """
+    if pos_mass <= 0.0 or neg_mass <= 0.0:
+        return 0.5
+    wins = 0.0
+    previous_tp = 0.0
+    previous_fp = 0.0
+    for index in range(tp.size):
+        vle_weight = float(tp[index] - previous_tp)
+        decoy_weight = float(fp[index] - previous_fp)
+        decoy_below = neg_mass - float(fp[index])
+        wins += vle_weight * decoy_below + 0.5 * vle_weight * decoy_weight
+        previous_tp = float(tp[index])
+        previous_fp = float(fp[index])
+    return wins / (pos_mass * neg_mass)
+
+
 def _ranked_curves(
     scores: np.ndarray, is_vle: np.ndarray, row_weight: np.ndarray
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Tie-end weighted recall, precision, FPR, and the score of each group."""
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float]:
+    """Tie-end weighted recall, precision, FPR, group score, and weighted AUC."""
     pos_mass = float(row_weight[is_vle].sum())
     neg_mass = float(row_weight[~is_vle].sum())
     if pos_mass <= 0.0 or neg_mass <= 0.0:
@@ -409,7 +422,8 @@ def _ranked_curves(
     precision = np.zeros_like(tp)
     np.divide(tp, predicted, out=precision, where=predicted > 0.0)
     fpr = fp / neg_mass
-    return recall, precision, fpr, sorted_scores[ends]
+    auc = _auc_from_groups(tp, fp, pos_mass, neg_mass)
+    return recall, precision, fpr, sorted_scores[ends], auc
 
 
 def _point_at_precision(
@@ -424,7 +438,7 @@ def _point_at_precision(
     """
     if row_weight is None:
         row_weight = np.ones(scores.size, dtype=np.float64)
-    recall, precision, fpr, group_score = _ranked_curves(scores, is_vle, row_weight)
+    recall, precision, fpr, group_score, _auc = _ranked_curves(scores, is_vle, row_weight)
     ok = precision >= target
     if not np.any(ok):
         return _Point(0.0, 0.0, 0.0, np.inf)
@@ -614,14 +628,39 @@ def _eligible_columns(
 
 def _peak(scores: np.ndarray, is_vle: np.ndarray, row_weight: np.ndarray) -> tuple[float, float]:
     """Highest precision on the curve, and the recall at that precision."""
-    recall, precision, _fpr, _score = _ranked_curves(scores, is_vle, row_weight)
+    recall, precision, _fpr, _score, _auc = _ranked_curves(scores, is_vle, row_weight)
     chosen = int(precision.argmax())
     return float(precision[chosen]), float(recall[chosen])
+
+
+def _curve_choice(
+    scores: np.ndarray, is_vle: np.ndarray, row_weight: np.ndarray
+) -> tuple[_Point, float, float, float]:
+    """Precision-0.5 point, peak precision and recall, and weighted AUC from one ranking."""
+    recall, precision, fpr, group_score, auc = _ranked_curves(scores, is_vle, row_weight)
+    ok = precision >= _TARGET_PRECISION
+    if not np.any(ok):
+        point = _Point(0.0, 0.0, 0.0, np.inf)
+    else:
+        best_recall = float(recall[ok].max())
+        chosen = int(np.flatnonzero(ok & (recall >= best_recall - 1e-12))[0])
+        point = _Point(
+            float(recall[chosen]),
+            float(precision[chosen]),
+            float(fpr[chosen]),
+            float(group_score[chosen]),
+        )
+    peak_at = int(precision.argmax())
+    return point, float(precision[peak_at]), float(recall[peak_at]), float(auc)
 
 
 def _prefer(cand: _Candidate, best: _Candidate | None) -> bool:
     if best is None:
         return True
+    if cand.auc > best.auc + 1e-12:
+        return True
+    if cand.auc < best.auc - 1e-12:
+        return False
     if cand.recall > best.recall + 1e-12:
         return True
     if cand.recall < best.recall - 1e-12:
@@ -666,8 +705,7 @@ def _evaluate_mix(
     else:
         score = (1.0 - alpha) * base_score + alpha * column
         weights = _mix_weights(current, feature, alpha)
-    point = _point_at_precision(score, is_vle, _TARGET_PRECISION, row_weight)
-    peak_precision, peak_recall = _peak(score, is_vle, row_weight)
+    point, peak_precision, peak_recall, auc = _curve_choice(score, is_vle, row_weight)
     return _Candidate(
         point.recall,
         point.precision,
@@ -677,6 +715,7 @@ def _evaluate_mix(
         point,
         peak_precision,
         peak_recall,
+        auc,
     )
 
 
@@ -691,7 +730,7 @@ def _forward_path(
     steps: list[_Step] = []
     corr_drops: list[tuple[str, str, float]] = []
     current = np.zeros(z.shape[1], dtype=np.float64)
-    current_recall = -1.0
+    current_auc = -1.0
     remaining = list(eligible)
     while remaining:
         best: _Candidate | None = None
@@ -706,24 +745,24 @@ def _forward_path(
                 )
                 if opening and label == "all-data":
                     print(
-                        "  %s  screen %s  recall %.4f  precision %.4f  peak_precision %.4f"
+                        "  %s  screen %s  auc %.4f  recall %.4f  precision %.4f"
                         % (
                             label,
                             terms[feature][0],
+                            cand.auc,
                             cand.recall,
                             cand.precision,
-                            cand.peak_precision,
                         ),
                         file=sys.stderr,
                         flush=True,
                     )
                 if _prefer(cand, best):
                     best = cand
-        if best is None or best.recall <= current_recall + 1e-12:
+        if best is None or best.auc <= current_auc + 1e-12:
             break
-        steps.append(_Step(best.feature, best.weights.copy(), best.point))
+        steps.append(_Step(best.feature, best.weights.copy(), best.point, best.auc))
         current = best.weights
-        current_recall = best.recall
+        current_auc = best.auc
         chosen = best.feature
         remaining.remove(chosen)
         if remaining:
@@ -746,8 +785,8 @@ def _forward_path(
                     kept.append(feature)
             remaining = kept
         print(
-            "  %s  term %d  %s  alpha %.2f  recall %.4f"
-            % (label, len(steps), terms[best.feature][0], best.alpha, best.recall),
+            "  %s  term %d  %s  alpha %.2f  auc %.4f  recall %.4f"
+            % (label, len(steps), terms[best.feature][0], best.alpha, best.auc, best.recall),
             file=sys.stderr,
             flush=True,
         )
@@ -791,7 +830,7 @@ class _Budget:
         self.cache: dict[tuple[float, ...], float] = {}
         self.exhausted = False
 
-    def recall(self, weights: np.ndarray, features: np.ndarray, is_vle: np.ndarray) -> float | None:
+    def auc(self, weights: np.ndarray, features: np.ndarray, is_vle: np.ndarray) -> float | None:
         key = tuple(np.round(weights, 8))
         cached = self.cache.get(key)
         if cached is not None:
@@ -800,9 +839,11 @@ class _Budget:
             self.exhausted = True
             return None
         self.n_eval += 1
-        point = _point_at_precision(features @ weights, is_vle, _TARGET_PRECISION, self.row_weight)
-        self.cache[key] = point.recall
-        return point.recall
+        _point, _peak_precision, _peak_recall, auc = _curve_choice(
+            features @ weights, is_vle, self.row_weight
+        )
+        self.cache[key] = auc
+        return auc
 
 
 def _exploratory(
@@ -823,7 +864,7 @@ def _exploratory(
             candidate = current.copy()
             candidate[coordinate] += sign * delta
             candidate = _project_support(candidate, support)
-            value = budget.recall(candidate, features, is_vle)
+            value = budget.auc(candidate, features, is_vle)
             if value is not None and value > best_value + 1e-12:
                 best = candidate
                 best_value = value
@@ -840,7 +881,7 @@ def _hooke_jeeves(
     support: np.ndarray,
 ) -> tuple[np.ndarray, float]:
     base = _project_support(start, support)
-    base_value = budget.recall(base, features, is_vle)
+    base_value = budget.auc(base, features, is_vle)
     if base_value is None:
         _die("ERROR: Hooke-Jeeves has no evaluations left at the start")
     delta = 0.25
@@ -858,7 +899,7 @@ def _hooke_jeeves(
         while jumps < 25 and not budget.exhausted:
             jumps += 1
             pattern = _project_support(base + (base - previous), support)
-            pattern_value = budget.recall(pattern, features, is_vle)
+            pattern_value = budget.auc(pattern, features, is_vle)
             if pattern_value is None:
                 break
             anchor = pattern_value if pattern_value > base_value else base_value
@@ -880,11 +921,11 @@ def _polish(
     row_weight: np.ndarray,
     start: np.ndarray,
     support: np.ndarray,
-) -> tuple[np.ndarray, _Point, int]:
+) -> tuple[np.ndarray, _Point, int, float]:
     budget = _Budget(_POLISH_EVALS, row_weight)
-    weights, _recall = _hooke_jeeves(start, budget, z, is_vle, support)
+    weights, auc = _hooke_jeeves(start, budget, z, is_vle, support)
     point = _point_at_precision(z @ weights, is_vle, _TARGET_PRECISION, row_weight)
-    return weights, point, budget.n_eval
+    return weights, point, budget.n_eval, auc
 
 
 def _positive_calls(scores: np.ndarray, is_vle: np.ndarray, threshold: float) -> tuple[int, int]:
@@ -898,7 +939,7 @@ def _positive_calls(scores: np.ndarray, is_vle: np.ndarray, threshold: float) ->
 def _choose_k(
     recall_rows: list[np.ndarray],
 ) -> tuple[int, tuple[tuple[int, float, float, bool], ...]]:
-    """Keep adding a term while the mean family gain exceeds its standard error."""
+    """Keep adding a term while the mean held-out AUC gain exceeds its standard error."""
     if not recall_rows:
         _die("ERROR: a complexity path has no prefix")
     kept = 1
@@ -1025,15 +1066,20 @@ def _orient_order(view: _View, order: tuple[int, ...]) -> None:
     _orient_columns(view.z, view.sign, columns, view.is_vle, view.row_weight)
 
 
-def _prefix_recalls(train_mask: np.ndarray, test_index: np.ndarray, order: tuple[int, ...]) -> list[float]:
+def _prefix_aucs(train_mask: np.ndarray, test_index: np.ndarray, order: tuple[int, ...]) -> list[float]:
+    """Unweighted AUC of each prefix, held-out family against every decoy."""
     view = _training_view(train_mask)
     _orient_order(view, order)
     fitted = _refit_order(view.z, view.is_vle, view.row_weight, order)
-    recalls = []
-    for weights, point in fitted:
-        called, n_pos = _score_family(view, weights, point.threshold, test_index)
-        recalls.append((called / n_pos) if n_pos else 0.0)
-    return recalls
+    decoy_index = np.flatnonzero(~_WORKER["is_vle"])
+    rows = np.concatenate([test_index, decoy_index])
+    scored = _signed_z(_WORKER["raw"][rows], view)
+    labels = np.zeros(rows.size, dtype=bool)
+    labels[: test_index.size] = True
+    aucs = []
+    for weights, _point in fitted:
+        aucs.append(_auc(scored @ weights, labels))
+    return aucs
 
 
 def _fit_outer(family: str) -> _Outer:
@@ -1050,21 +1096,28 @@ def _fit_outer(family: str) -> _Outer:
     for name in inner_names:
         inner_train = train_mask.copy()
         inner_train[_WORKER["family_rows"][name]] = False
-        columns.append(_prefix_recalls(inner_train, _WORKER["family_rows"][name], order))
-    recall_rows = []
-    inner_recalls: list[tuple[float, ...]] = []
+        columns.append(_prefix_aucs(inner_train, _WORKER["family_rows"][name], order))
+    auc_rows = []
+    inner_aucs: list[tuple[float, ...]] = []
     for k in range(len(order)):
         row = np.array([columns[item][k] for item in range(len(inner_names))], dtype=np.float64)
-        recall_rows.append(row)
-        inner_recalls.append(tuple(float(value) for value in row))
-    chosen, notes = _choose_k(recall_rows)
+        auc_rows.append(row)
+        inner_aucs.append(tuple(float(value) for value in row))
+    chosen, notes = _choose_k(auc_rows)
     step = search.steps[chosen - 1]
     called, n_pos = _score_family(view, step.weights, step.train_point.threshold, test_index)
     stem_called = _stem_called(view, train_mask, test_index)
     auc, stem_auc, fpr, tpr = _holdout_ranking(view, step.weights, test_index)
     print(
-        "family %s done  k %d  recall %.4f  auc %.4f  in %.1fs"
-        % (family, chosen, (called / n_pos) if n_pos else 0.0, auc, time.perf_counter() - started),
+        "family %s done  k %d  holdout_recall %.4f  auc %.4f  train_auc %.4f  in %.1fs"
+        % (
+            family,
+            chosen,
+            (called / n_pos) if n_pos else 0.0,
+            auc,
+            step.train_auc,
+            time.perf_counter() - started,
+        ),
         file=sys.stderr,
         flush=True,
     )
@@ -1079,7 +1132,7 @@ def _fit_outer(family: str) -> _Outer:
         weights=step.weights,
         path_features=order,
         inner_names=inner_names,
-        inner_recalls=tuple(inner_recalls),
+        inner_aucs=tuple(inner_aucs),
         gain_rows=notes,
         voting=True,
         auc=auc,
@@ -1118,7 +1171,7 @@ def _holdout_fixed(family: str, feature_order: tuple[int, ...], k: int) -> _Oute
         weights=weights,
         path_features=tuple(order),
         inner_names=(),
-        inner_recalls=(),
+        inner_aucs=(),
         gain_rows=(),
         voting=False,
         auc=auc,
@@ -1283,10 +1336,12 @@ def _self_check() -> None:
     _expect(_median_k([1, 2]) == 1, "even median rounds down")
     zeros = np.zeros(1, dtype=np.float64)
     empty = _Point(0.0, 0.0, 0.0, np.inf)
-    weaker = _Candidate(0.0, 0.0, 0, 1.0, zeros, empty, 0.10, 0.20)
-    stronger = _Candidate(0.0, 0.0, 1, 1.0, zeros, empty, 0.40, 0.50)
-    _expect(_prefer(stronger, weaker), "higher peak precision wins a recall tie")
-    _expect(not _prefer(weaker, stronger), "lower peak precision loses a recall tie")
+    weaker = _Candidate(0.0, 0.0, 0, 1.0, zeros, empty, 0.10, 0.20, 0.5)
+    stronger = _Candidate(0.0, 0.0, 1, 1.0, zeros, empty, 0.40, 0.50, 0.5)
+    higher_auc = _Candidate(0.0, 0.0, 2, 1.0, zeros, empty, 0.0, 0.0, 0.8)
+    _expect(_prefer(stronger, weaker), "higher peak precision wins an AUC tie")
+    _expect(not _prefer(weaker, stronger), "lower peak precision loses an AUC tie")
+    _expect(_prefer(higher_auc, stronger), "higher AUC wins a lower operating-point recall")
 
     decoy_high = np.array([0.0, 1.0, 5.0, 4.0, 3.0])
     decoy_labels = np.array([True, True, False, False, False])
@@ -1305,7 +1360,7 @@ def _self_check() -> None:
     tied_labels = np.array([True, False, True, False])
     tied_sign = np.ones(1, dtype=np.float64)
     _orient_columns(tied, tied_sign, [0], tied_labels, np.ones(4))
-    _expect(tied_sign[0] > 0.0, "equal recall on both directions keeps +1")
+    _expect(tied_sign[0] > 0.0, "an AUC of 0.5 keeps +1")
     _expect(abs(float(tied[0, 0]) - 1.0) < 1e-12, "a tied column is not flipped")
 
     base = np.array([3.0, 3.0, 3.0, 3.0, 0.0, 0.0, 0.0, 0.0])
@@ -1330,6 +1385,47 @@ def _self_check() -> None:
     _expect(len(pair_drops) == 1 and pair_drops[0][0] == "close", "a correlation of 0.95 drops the partner")
     _expect(pair_drops[0][1] == "correlated with base", "the drop names the accepted term")
     _expect(all(name != "mid" for name, _reason, _value in pair_drops), "a correlation of 0.50 does not")
+
+    rank_labels = np.array([True, True] + [False] * 7)
+    rank_weight = np.ones(rank_labels.size)
+    rank_column = np.array([1.0, 1.0, 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0])
+    call_column = np.array([5.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+    _recall, _precision, _fpr, _score, rank_auc = _ranked_curves(rank_column, rank_labels, rank_weight)
+    _recall, _precision, _fpr, _score, call_auc = _ranked_curves(call_column, rank_labels, rank_weight)
+    rank_point = _point_at_precision(rank_column, rank_labels, _TARGET_PRECISION, rank_weight)
+    call_point = _point_at_precision(call_column, rank_labels, _TARGET_PRECISION, rank_weight)
+    _expect(abs(rank_auc - 4.0 / 7.0) < 1e-12, "the ranking column has the higher AUC")
+    _expect(abs(call_auc - 0.5) < 1e-12, "the calling column has AUC 0.5")
+    _expect(rank_auc > call_auc, "AUC favors the ranking column")
+    _expect(abs(rank_point.recall) < 1e-12, "the ranking column has no recall at precision 0.5")
+    _expect(abs(call_point.recall - 0.5) < 1e-12, "the calling column has the higher recall")
+    rank_steps, _rank_drops = _forward_path(
+        np.column_stack([rank_column, call_column]),
+        rank_labels,
+        rank_weight,
+        [0, 1],
+        [("rank", "identity"), ("call", "identity")],
+        "self-check",
+    )
+    _expect(rank_steps[0].feature == 0, "the search keeps the higher AUC")
+
+    missing_notes = [name for name in _canonical_feature_names() if name not in _FEATURE_NOTES]
+    _expect(not missing_notes, "every feature has a biologist note")
+    note_model = _Model(
+        np.array([0.7, 0.3]),
+        np.array([12.0, 0.1]),
+        np.array([5.0, 0.05]),
+        _Point(0.9, 0.5, 0.1, 0.4),
+        1,
+        2,
+        2,
+        np.array([-1.0, 1.0]),
+        0.99,
+    )
+    note_text = _features_text([("pH", "identity"), ("bKeto", "identity")], note_model)
+    _expect("Lower values vote for a viral-like element." in note_text, "a negative term is explained as lower")
+    _expect("## bKeto" in note_text, "a selected feature is documented")
+    _expect("S = 0.7*(-z(pH)) + 0.3*z(bKeto)" in note_text, "the note states the signed formula")
 
 
 def _rate(numerator: int, denominator: int) -> float:
@@ -1389,6 +1485,226 @@ def _write_holdouts(path: Path, terms: list[tuple[str, str]], holdouts: list[_Ou
             )
 
 
+_FEATURE_NOTES = {
+    "nr_bases": (
+        "Length of the circle, in nucleotides. The score does not use length itself, "
+        "because a longer circle is not a viral-like element."
+    ),
+    "nr_paired_bases": (
+        "How many nucleotides sit in a base pair. Each pair contributes two. "
+        "A circle with no pairs scores zero."
+    ),
+    "nr_unpaired_bases": (
+        "How many nucleotides are not paired. On a circle these are the loops: "
+        "hairpin loops, interior loops, bulges, and branch-point loops."
+    ),
+    "pct_paired_bases": (
+        "The percentage of the circle that is paired. This is the same measurement as pS."
+    ),
+    "longest_stem_total_nr_bases": (
+        "Length of the longest uninterrupted helix. An uninterrupted helix has no "
+        "unpaired nucleotide inside it, so this count is the paired nucleotides only."
+    ),
+    "longest_stem_nr_paired_bases": (
+        "Paired nucleotides in the longest uninterrupted helix. "
+        "This matches longest_stem_total_nr_bases, because that helix has no internal loop."
+    ),
+    "longest_stem_pct_paired_bases": (
+        "Of the longest uninterrupted helix, the percentage that is paired. "
+        "An uninterrupted helix is entirely paired, so this is 100 whenever such a helix exists."
+    ),
+    "longest_stem_pct_total_bases": (
+        "The longest uninterrupted helix as a percentage of the circle. "
+        "A long rod on a short circle scores high."
+    ),
+    "longest_composite_stem_total_nr_bases": (
+        "Length of the longest composite stem, counting both its pairs and the short "
+        "unpaired gaps inside it. A composite stem joins helices that are separated by "
+        "at most five unpaired nucleotides on a strand. Hairpin loops at the ends are not counted."
+    ),
+    "longest_composite_stem_nr_paired_bases": (
+        "Paired nucleotides in the longest composite stem. The short unpaired gaps "
+        "bridged inside that stem are left out of this count."
+    ),
+    "longest_composite_stem_pct_paired_bases": (
+        "Of the longest composite stem, the percentage that is paired. "
+        "A clean helix scores near 100. A stem stitched across many short gaps scores lower."
+    ),
+    "longest_composite_stem_pct_total_bases": (
+        "The longest composite stem, pairs plus its internal gaps, as a percentage of the circle. "
+        "A circle that is mostly one rod scores high."
+    ),
+    "max_bulge_len": (
+        "The longest run of consecutive unpaired nucleotides on one strand inside a composite stem. "
+        "A single large bulge or interior-loop side raises this number."
+    ),
+    "nr_excess_bulges": (
+        "How many unpaired runs inside composite stems are longer than one nucleotide, "
+        "the median bulge length of the training set. A circle of only single-nucleotide gaps scores zero."
+    ),
+    "total_nr_bulge_bases": (
+        "Nucleotides in the unpaired gaps inside composite stems, on either strand. "
+        "Hairpin loops and branch-point loops are not included."
+    ),
+    "pct_bulge": (
+        "Unpaired nucleotides inside composite stems, as a percentage of the circle. "
+        "This is the share of the circle spent in bulges and interior loops rather than in pairs, "
+        "hairpin loops, or branch points."
+    ),
+    "excess_bulge_nr_bases": (
+        "Nucleotides that belong to unpaired runs longer than one nucleotide inside composite stems. "
+        "Single-nucleotide gaps are left out."
+    ),
+    "pct_excess_bulges": (
+        "Nucleotides in those longer-than-one unpaired runs, as a percentage of the circle."
+    ),
+    "bulge_to_stem_ratio": (
+        "Unpaired nucleotides inside composite stems, divided by the number of paired nucleotides. "
+        "A circle with no pairs scores zero. A rod with many internal gaps scores high."
+    ),
+    "bulge_length_L2_norm": (
+        "A single number that grows with both the number of unpaired runs and their lengths. "
+        "It is the square root of the sum of each run length squared, so one long bulge "
+        "counts more than several short gaps of the same total."
+    ),
+    "nr_bases_true_bulges": (
+        "Unpaired nucleotides that sit on only one strand of a composite stem, "
+        "with the opposite strand fully paired. These are bulges rather than interior loops."
+    ),
+    "nr_bases_symmetric_loops": (
+        "Unpaired nucleotides in interior loops, where both strands of a composite stem "
+        "have an unpaired stretch between the same two helices."
+    ),
+    "pct_true_bulges": (
+        "Bulge nucleotides, unpaired on one strand only, as a percentage of the circle."
+    ),
+    "pct_symmetric_loops": (
+        "Interior-loop nucleotides, unpaired on both strands, as a percentage of the circle."
+    ),
+    "pS": (
+        "The percentage of the circle that is paired. A structure with no pairs scores zero. "
+        "Together with the four loop percentages, a paired circle adds to 100."
+    ),
+    "pH": (
+        "The percentage of the circle that sits in hairpin loops. A hairpin loop is an unpaired "
+        "stretch closed by a single base pair. On a circle, one helix has two such loops: "
+        "the apical loop and the loop that crosses the start of the sequence."
+    ),
+    "pI": (
+        "The percentage of the circle that sits in interior loops. An interior loop is closed "
+        "by two base pairs and has unpaired nucleotides on both strands."
+    ),
+    "pB": (
+        "The percentage of the circle that sits in bulges. A bulge is closed by two base pairs "
+        "and has unpaired nucleotides on only one strand."
+    ),
+    "pF": (
+        "The percentage of the circle that sits in branch-point loops. A branch point is a loop "
+        "where three or more helices meet. A rod, which has no branch point, scores zero."
+    ),
+    "pRod": (
+        "Paired nucleotides on the rod, as a percentage of the circle. The rod is the path of "
+        "helices from one hairpin loop to another that holds the most base pairs. "
+        "A circle that is one rod scores the same as pS. A circle with no pairs scores zero."
+    ),
+    "nBranch": (
+        "How many branch points the fold contains. A branch point is a loop where three or more "
+        "helices meet. A rod scores zero."
+    ),
+    "pLongestRod": (
+        "Paired nucleotides in the longest unbranched piece of the rod, as a percentage of the circle. "
+        "On a rod with no branch point this equals pRod. Side branches are not counted."
+    ),
+    "pOffRod": (
+        "Of all paired nucleotides, the percentage that is not on the rod. "
+        "A rod scores zero. A circle with no pairs scores zero, because there is nothing to divide. "
+        "Three equal arms leave about a third of the pairs off the best path."
+    ),
+    "pOnRod": (
+        "Of all paired nucleotides, the percentage that lies on the rod. "
+        "This is 100 minus pOffRod when the circle has pairs, and zero when it has none. "
+        "A hairpin scores 100."
+    ),
+    "pSplitStem": (
+        "Of all paired nucleotides, the percentage outside the longest composite stem. "
+        "A single stem scores zero. Two equal stems separated by more than five unpaired "
+        "nucleotides score about 50, even when the drawing is still one rod."
+    ),
+    "pLongestPairShare": (
+        "Of all paired nucleotides, the percentage inside the longest composite stem. "
+        "This is 100 minus pSplitStem when the circle has pairs, and zero when it has none."
+    ),
+    "pJunction": (
+        "At each branch point, every helix but the one with the most pairs is set aside. "
+        "This is those set-aside pairs as a percentage of the pairs that meet a branch point, "
+        "weighted by how many pairs meet there. A rod with no branch point scores zero. "
+        "A symmetric three-way junction scores about 67."
+    ),
+    "pDominantSpoke": (
+        "The complement of pJunction: the percentage of branch-point pairs that belong to "
+        "the heaviest helix at each junction. A hairpin scores 100. A circle with no pairs scores zero."
+    ),
+    "bKeto": (
+        "How uneven the paired nucleotides are between keto bases (G and U) and amino bases (A and C). "
+        "It is the absolute difference divided by their sum, from 0 to 1. A G-C or A-U pair has one of "
+        "each, and a G-U pair has two keto bases, so this is the share of G-U pairs among the base pairs. "
+        "A circle with no pairs scores zero."
+    ),
+    "uKeto": (
+        "The same keto-versus-amino imbalance, measured on the unpaired nucleotides. "
+        "It runs from 0 to 1. Unpaired nucleotides often lean amino, because G-U pairs pull keto bases into the helices."
+    ),
+}
+
+
+def _features_text(terms: list[tuple[str, str]], model: _Model) -> str:
+    """Biologist's note for the features with a positive published weight."""
+    lines = [
+        "# Features in the VLE score",
+        "",
+        "S is a weighted sum of standardized features. Each feature has its training median subtracted and is then divided by its training interquartile range. Counts and lengths are replaced by their logarithm before that step.",
+        "",
+        "A minus sign on a term means a lower value votes for a viral-like element. A term without a minus means a higher value votes for one.",
+        "",
+        "Call the circle a viral-like element when S is at least %s. That cutoff is the point with the highest recall whose precision is still at least 0.5."
+        % _fmt(model.train_point.threshold),
+        "",
+        "Formula",
+        "",
+    ]
+    pieces = []
+    selected: list[tuple[int, str]] = []
+    for index, (name, _transform) in enumerate(terms):
+        if model.weights[index] <= 0.0:
+            continue
+        selected.append((index, name))
+        term = "z(%s)" % name
+        if model.sign[index] < 0.0:
+            term = "(-%s)" % term
+        pieces.append("%s*%s" % (_fmt(float(model.weights[index])), term))
+    if not selected:
+        _die("ERROR: the published formula has no features to document")
+    lines.append("S = " + " + ".join(pieces))
+    lines.append("")
+    for index, name in selected:
+        note = _FEATURE_NOTES.get(name)
+        if note is None:
+            _die("ERROR: no biologist note for %s" % name)
+        if model.sign[index] < 0.0:
+            direction = "Lower values vote for a viral-like element."
+        else:
+            direction = "Higher values vote for a viral-like element."
+        lines.append("## %s" % name)
+        lines.append("")
+        lines.append(
+            "Weight %s. Sign %+d. %s" % (_fmt(float(model.weights[index])), int(model.sign[index]), direction)
+        )
+        lines.append("")
+        lines.append(note)
+        lines.append("")
+    return "\n".join(lines)
+
+
 def _summary_text(
     n_vle: int,
     n_decoy: int,
@@ -1406,7 +1722,7 @@ def _summary_text(
         mean_stem = sum(_rate(item.stem_called, item.n_vle) for item in voting) / len(voting)
     lines = [
         "VLE discriminator score.",
-        "Objective: maximize family-weighted recall at precision >= %.2f." % _TARGET_PRECISION,
+        "Objective: maximize family-weighted AUC.",
         "Each VLE family with at least %d circles has the same total weight." % _MIN_FAMILY_N,
         "Those totals, plus weight 1 on smaller VLE families, sum to the VLE row count.",
         "VLE families below %d keep weight 1 per row." % _MIN_FAMILY_N,
@@ -1414,15 +1730,14 @@ def _summary_text(
         "Precision counts a decoy by its row weight. The %.1f%% VLE prevalence therefore stays inside the cutoff."
         % (100.0 * n_vle / (n_vle + n_decoy)),
         "z(x) = (x - train_median) / train_IQR. Counts and lengths are log1p before that z-score.",
-        "Each training fold orients a feature before selection. The sign is -1 when -z has the better family-weighted recall at precision >= %.2f. A tie keeps +1."
-        % _TARGET_PRECISION,
+        "Each training fold orients a feature before selection. The sign is -1 when the family-weighted AUC of +z is below 0.5. A tie keeps +1.",
         "A feature is eligible when its training IQR is positive.",
         "%s is excluded. An exact duplicate column is dropped." % _LENGTH_FEATURE,
         "After a term is accepted, a remaining candidate is dropped when its family-weighted absolute Pearson correlation with that term is at least %.2f."
         % _CORR_DROP,
-        "Forward selection adds the mix that most raises training recall, and stops when recall does not rise.",
+        "Forward selection adds the mix that most raises training AUC, and stops when AUC does not rise.",
         "For each voting family, k is chosen from the other voting families.",
-        "A longer prefix is kept when the unweighted mean of the held-out recall gains exceeds its standard error.",
+        "A longer prefix is kept when the unweighted mean of the held-out AUC gains exceeds its standard error.",
         "The published k is the median of those choices. An even median rounds down.",
         "The published formula is that prefix of the all-data path, then a short Hooke-Jeeves polish.",
         "Validation holds out one VLE family at a time. Decoy rows stay in every training set.",
@@ -1468,8 +1783,8 @@ def _summary_text(
     lines.append("all-data path")
     for index, step in enumerate(search.steps, start=1):
         lines.append(
-            "k %d\t%s\ttrain_weighted_recall %s"
-            % (index, terms[step.feature][0], _fmt(step.train_point.recall))
+            "k %d\t%s\ttrain_weighted_auc %s\ttrain_weighted_recall %s"
+            % (index, terms[step.feature][0], _fmt(step.train_auc), _fmt(step.train_point.recall))
         )
     lines.append("")
     lines.append("formula")
@@ -1494,8 +1809,8 @@ def _summary_text(
     lines.append("S = " + " + ".join(pieces))
     lines.append("threshold = %s" % _fmt(published.train_point.threshold))
     lines.append(
-        "all-data train weighted recall %.4f at precision %.4f"
-        % (published.train_point.recall, published.train_point.precision)
+        "all-data train weighted auc %.4f, recall %.4f at precision %.4f"
+        % (published.train_auc, published.train_point.recall, published.train_point.precision)
     )
     lines.append("polish_evals\t%d" % published.n_eval)
     lines.append("")
@@ -1509,10 +1824,10 @@ def _summary_text(
         gain_by_k = {row[0]: row for row in holdout.gain_rows}
         shown = max([1] + [row[0] for row in holdout.gain_rows])
         for k in range(1, shown + 1):
-            recalls = holdout.inner_recalls[k - 1]
+            aucs = holdout.inner_aucs[k - 1]
             parts = []
-            for name, recall in zip(holdout.inner_names, recalls):
-                parts.append("%s %.4f" % (name, recall))
+            for name, auc in zip(holdout.inner_names, aucs):
+                parts.append("%s %.4f" % (name, auc))
             if k == 1:
                 lines.append("k %d\t%s" % (k, "\t".join(parts)))
                 continue
@@ -1643,13 +1958,15 @@ def _publish(search: _Search, requested_k: int, raw: np.ndarray, is_vle: np.ndar
     terms = _WORKER["terms"]
     z = _apply_z(raw, search.median, search.iqr, search.active, terms) * search.sign
     row_weight = _row_weights(families, is_vle)
-    weights, point, n_eval = _polish(z, is_vle, row_weight, start, support)
+    weights, point, n_eval, train_auc = _polish(z, is_vle, row_weight, start, support)
     print(
-        "polished k %d  recall %.4f  evals %d" % (used, point.recall, n_eval),
+        "polished k %d  auc %.4f  recall %.4f  evals %d" % (used, train_auc, point.recall, n_eval),
         file=sys.stderr,
         flush=True,
     )
-    return _Model(weights, search.median, search.iqr, point, n_eval, used, requested_k, search.sign)
+    return _Model(
+        weights, search.median, search.iqr, point, n_eval, used, requested_k, search.sign, train_auc
+    )
 
 
 def main() -> None:
@@ -1755,18 +2072,29 @@ def main() -> None:
     rates_path = output_dir / "family_rates.png"
     roc_path = output_dir / "holdout_roc.png"
     auc_path = output_dir / "auc_summary.txt"
+    features_path = output_dir / "features.md"
     _write_parameters(parameters_path, terms, published)
     _write_holdouts(holdouts_path, terms, holdouts)
     text = _summary_text(n_vle, n_decoy, terms, published, search, weight_rows, holdouts)
     summary_path.write_text(text, encoding="utf-8", newline="\n")
     auc_text = _auc_summary_text(holdouts)
     auc_path.write_text(auc_text, encoding="utf-8", newline="\n")
+    features_path.write_text(_features_text(terms, published), encoding="utf-8", newline="\n")
     _write_weights(weights_path, terms, holdouts)
     _write_family_rates(rates_path, holdouts)
     _write_roc(roc_path, holdouts)
     print(text, end="")
     print(auc_text, end="")
-    for path in (summary_path, parameters_path, holdouts_path, weights_path, rates_path, roc_path, auc_path):
+    for path in (
+        summary_path,
+        parameters_path,
+        holdouts_path,
+        weights_path,
+        rates_path,
+        roc_path,
+        auc_path,
+        features_path,
+    ):
         print("wrote %s" % path)
     print("elapsed %.1fs" % (time.perf_counter() - started), flush=True)
 

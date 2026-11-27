@@ -1,5 +1,5 @@
 feature	transform	train_median	train_iqr	weight	sign
-bKeto	identity	0.115	0.0523	0.31943	-1
+bKeto	identity	0.115	0.0523	0	-1
 bulge_length_L2_norm	log1p	2.44235	0.669477	0	+1
 bulge_to_stem_ratio	identity	0.199	0.085	0	+1
 excess_bulge_nr_bases	log1p	3.46574	1.42947	0	+1
@@ -9,7 +9,7 @@ longest_composite_stem_pct_total_bases	identity	17.6	18.88	0	+1
 longest_composite_stem_total_nr_bases	log1p	4.17439	0.649662	0	+1
 longest_stem_nr_paired_bases	log1p	2.94444	0.302281	0	-1
 longest_stem_pct_paired_bases	identity	100	0	0	+1
-longest_stem_pct_total_bases	identity	5.29	5.48	0	-1
+longest_stem_pct_total_bases	identity	5.29	5.48	0	+1
 longest_stem_total_nr_bases	log1p	2.94444	0.302281	0	+1
 max_bulge_len	log1p	1.79176	0.182322	0	-1
 nBranch	log1p	1.09861	1.25276	0	-1
@@ -17,12 +17,12 @@ nr_bases	log1p	5.81114	1.46432	0	+1
 nr_bases_symmetric_loops	log1p	3.58352	1.41099	0	+1
 nr_bases_true_bulges	log1p	2.19722	1.43508	0	+1
 nr_excess_bulges	log1p	2.48491	1.31219	0	+1
-nr_paired_bases	log1p	5.3033	1.53075	0	+1
+nr_paired_bases	log1p	5.3033	1.53075	0	-1
 nr_unpaired_bases	log1p	4.90527	1.31687	0	-1
 pB	identity	3.04	2.46	0	+1
 pDominantSpoke	identity	45.4	13.6	0	+1
 pF	identity	9.76	6.88	0	-1
-pH	identity	12.3	5.1	0.68057	-1
+pH	identity	12.3	5.1	0	-1
 pI	identity	12.9	6.5	0	+1
 pJunction	identity	54.6	13.6	0	-1
 pLongestPairShare	identity	23.9	24.8	0	+1
@@ -32,11 +32,11 @@ pOnRod	identity	61.1	31.4	0	+1
 pRod	identity	35.4	18.2	0	+1
 pS	identity	60.2	7.3	0	+1
 pSplitStem	identity	76.1	24.8	0	-1
-pct_bulge	identity	12	5.21	0	+1
+pct_bulge	identity	12	5.21	1	+1
 pct_excess_bulges	identity	8.2	4.6	0	+1
 pct_paired_bases	identity	60.2	7.3	0	+1
 pct_symmetric_loops	identity	9.59	4.81	0	+1
 pct_true_bulges	identity	2.21	1.68	0	+1
 total_nr_bulge_bases	log1p	3.78419	1.39624	0	+1
 uKeto	identity	0.205	0.196	0	+1
-threshold				0.473217	
+threshold				0.710173	

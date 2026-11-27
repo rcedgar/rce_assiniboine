@@ -1,6 +1,6 @@
 family	n_test	n_vle	k	train_weighted_recall	train_weighted_precision	train_threshold	holdout_recall	stem_holdout_recall	bKeto	bulge_length_L2_norm	bulge_to_stem_ratio	excess_bulge_nr_bases	longest_composite_stem_nr_paired_bases	longest_composite_stem_pct_paired_bases	longest_composite_stem_pct_total_bases	longest_composite_stem_total_nr_bases	longest_stem_nr_paired_bases	longest_stem_pct_paired_bases	longest_stem_pct_total_bases	longest_stem_total_nr_bases	max_bulge_len	nBranch	nr_bases	nr_bases_symmetric_loops	nr_bases_true_bulges	nr_excess_bulges	nr_paired_bases	nr_unpaired_bases	pB	pDominantSpoke	pF	pH	pI	pJunction	pLongestPairShare	pLongestRod	pOffRod	pOnRod	pRod	pS	pSplitStem	pct_bulge	pct_excess_bulges	pct_paired_bases	pct_symmetric_loops	pct_true_bulges	total_nr_bulge_bases	uKeto
-ambivirus	617	617	4	0.992432	0.500027	0.496069	0.996759	0.993517	0.18	0	0	0	0	0	0	0.252	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.1	0	0.468	0	0	0	0	0	0
-obelisk	13747	13747	1	0.98244	0.553878	1.02745	0.909144	0.945734	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-pospiviroid	7535	7535	3	0.990942	0.500587	0.660953	0.988719	0.926211	0.2	0	0	0	0	0	0	0.4	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.4	0	0	0	0	0	0
-ribozyvirus	908	908	2	0.987035	0.500161	0.771652	0.986784	0.98348	0	0	0	0	0	0	0	0.35	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.65	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-zetavirus	5	5	2	0.987656	0.500492	0.466344	1	1	0.35	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.65	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+ambivirus	617	617	2	0.989264	0.501059	0.66697	0.996759	0.993517	0	0	0	0	0.35	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.65	0	0	0	0	0	0
+obelisk	13747	13747	4	0.987922	0.504059	0.589672	0.943406	0.945734	0.1	0	0	0.252	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.468	0	0	0.18	0	0	0	0	0	0
+pospiviroid	7535	7535	1	0.968944	0.501488	0.909615	0.978235	0.926211	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+ribozyvirus	908	908	1	0.975499	0.501445	0.792157	0.986784	0.98348	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+zetavirus	5	5	1	0.978533	0.501146	0.710173	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
