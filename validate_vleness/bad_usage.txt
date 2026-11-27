@@ -1,12 +1,14 @@
 vleness: unknown option
 usage: vleness [--threads N] [--rnafold | --tsv I,J | --lsc]
                [--keep-full-label] [--log FILE] [--maxerror N]
-               input output.tsv
+               [--minscore X] input output.tsv
 
 Score each circular dot-bracket. pct_bulge is the percent of the circle
 in unpaired gaps inside composite stems (helices joined across at most
 five unpaired nucleotides on a strand). S = (pct_bulge - 12) / 5.21.
 pct_bulge is printed with one decimal place and S with four.
+Rows with S below --minscore are omitted (default 0.75).
+An LSC row is kept when the larger of S1 and S2 reaches that cutoff.
 
 The first byte selects the format: '>' is RNAfold, anything else is TSV.
 --rnafold forces three-line RNAfold records (label, sequence, structure).

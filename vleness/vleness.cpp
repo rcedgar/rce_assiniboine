@@ -2,7 +2,7 @@
 // S = (pct_bulge - 12) / 5.21.
 //
 // vleness [--threads N] [--rnafold | --tsv I,J | --lsc] [--keep-full-label]
-//         [--log FILE] [--maxerror N] input output.tsv
+//         [--log FILE] [--maxerror N] [--minscore X] input output.tsv
 //
 // input may be a path, including /dev/stdin. The file is never seeked.
 
@@ -12,6 +12,7 @@
 
 #include <cctype>
 #include <clocale>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -24,16 +25,19 @@ static const int kGap = 5;
 static const double kBulgeMedian = 12.0;
 static const double kBulgeIqr = 5.21;
 static const int kDefaultMaxError = 1000;
+static const double kDefaultMinScore = 0.75;
 
 static const char* kUsage =
     "usage: vleness [--threads N] [--rnafold | --tsv I,J | --lsc]\n"
     "               [--keep-full-label] [--log FILE] [--maxerror N]\n"
-    "               input output.tsv\n"
+    "               [--minscore X] input output.tsv\n"
     "\n"
     "Score each circular dot-bracket. pct_bulge is the percent of the circle\n"
     "in unpaired gaps inside composite stems (helices joined across at most\n"
     "five unpaired nucleotides on a strand). S = (pct_bulge - 12) / 5.21.\n"
     "pct_bulge is printed with one decimal place and S with four.\n"
+    "Rows with S below --minscore are omitted (default 0.75).\n"
+    "An LSC row is kept when the larger of S1 and S2 reaches that cutoff.\n"
     "\n"
     "The first byte selects the format: '>' is RNAfold, anything else is TSV.\n"
     "--rnafold forces three-line RNAfold records (label, sequence, structure).\n"
@@ -66,6 +70,7 @@ struct Options {
     int db_col;
     int threads;
     int max_error;
+    double min_score;
     bool keep_full_label;
     const char* log_path;
     const char* input_path;
@@ -127,6 +132,19 @@ static bool parse_i64(const char* text, long* out, long lo, long hi) {
     char* end = 0;
     long value = std::strtol(text, &end, 10);
     if (end == text || *end != '\0' || value < lo || value > hi) {
+        return false;
+    }
+    *out = value;
+    return true;
+}
+
+static bool parse_f64(const char* text, double* out) {
+    if (!text || !text[0]) {
+        return false;
+    }
+    char* end = 0;
+    double value = std::strtod(text, &end);
+    if (end == text || *end != '\0' || !std::isfinite(value)) {
         return false;
     }
     *out = value;
@@ -635,7 +653,15 @@ static void score_range(std::vector<Job>* jobs, size_t begin, size_t end) {
     }
 }
 
-static bool write_output(const char* path, const std::vector<Job>& jobs, bool lsc) {
+static bool keep_job(const Job& job, double min_score) {
+    double best = job.s1;
+    if (job.lsc && job.s2 > best) {
+        best = job.s2;
+    }
+    return best >= min_score;
+}
+
+static bool write_output(const char* path, const std::vector<Job>& jobs, bool lsc, double min_score) {
     FILE* out = std::fopen(path, "wb");
     if (!out) {
         std::fprintf(stderr, "vleness: cannot write %s\n", path);
@@ -646,6 +672,9 @@ static bool write_output(const char* path, const std::vector<Job>& jobs, bool ls
     }
     for (size_t i = 0; i < jobs.size(); ++i) {
         const Job& job = jobs[i];
+        if (!keep_job(job, min_score)) {
+            continue;
+        }
         if (job.lsc) {
             double best = job.s1 > job.s2 ? job.s1 : job.s2;
             std::fprintf(
@@ -683,6 +712,7 @@ static void parse_args(int argc, char** argv, Options* opt) {
     opt->db_col = 2;
     opt->threads = default_threads();
     opt->max_error = kDefaultMaxError;
+    opt->min_score = kDefaultMinScore;
     opt->keep_full_label = false;
     opt->log_path = 0;
     opt->input_path = 0;
@@ -716,7 +746,8 @@ static void parse_args(int argc, char** argv, Options* opt) {
         const char* value = 0;
         const char* name = arg;
         if (std::strncmp(arg, "--tsv", 5) == 0 || std::strncmp(arg, "--threads", 9) == 0 ||
-            std::strncmp(arg, "--log", 5) == 0 || std::strncmp(arg, "--maxerror", 10) == 0) {
+            std::strncmp(arg, "--log", 5) == 0 || std::strncmp(arg, "--maxerror", 10) == 0 ||
+            std::strncmp(arg, "--minscore", 10) == 0) {
             const char* eq = std::strchr(arg, '=');
             if (eq) {
                 value = eq + 1;
@@ -731,6 +762,8 @@ static void parse_args(int argc, char** argv, Options* opt) {
                 name = "--threads";
             } else if (std::strncmp(arg, "--maxerror", 10) == 0) {
                 name = "--maxerror";
+            } else if (std::strncmp(arg, "--minscore", 10) == 0) {
+                name = "--minscore";
             } else {
                 name = "--log";
             }
@@ -760,6 +793,14 @@ static void parse_args(int argc, char** argv, Options* opt) {
                     die_usage("--maxerror must be an integer >= 0");
                 }
                 opt->max_error = static_cast<int>(n);
+                continue;
+            }
+            if (std::strcmp(name, "--minscore") == 0) {
+                double score = 0.0;
+                if (!parse_f64(value, &score)) {
+                    die_usage("--minscore must be a number");
+                }
+                opt->min_score = score;
                 continue;
             }
             if (std::strcmp(name, "--log") == 0) {
@@ -857,7 +898,7 @@ int main(int argc, char** argv) {
         }
     }
     std::fclose(input);
-    if (!write_output(opt.output_path, jobs, reader.lsc)) {
+    if (!write_output(opt.output_path, jobs, reader.lsc, opt.min_score)) {
         return 1;
     }
     if (!ok) {

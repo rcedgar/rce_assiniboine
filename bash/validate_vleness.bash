@@ -8,6 +8,8 @@ mkdir -p validate_vleness
 
 make -C vleness
 bin=vleness/vleness
+# Score checks keep every row. The default cutoff is 0.75.
+keep=(--minscore -1000)
 
 "$bin" > validate_vleness/usage.txt
 "$bin" -h > /dev/null
@@ -39,10 +41,13 @@ with open("validate_vleness/quick.tsv", "w", newline="\n") as raw, \
         exp.write("%s\t%d\t%.1f\t%.4f\n" % (label, len(db), pct, score))
 PY
 
-"$bin" --threads 1 validate_vleness/quick.tsv validate_vleness/quick_vleness.tsv
-"$bin" --threads 4 validate_vleness/quick.tsv validate_vleness/quick_threads.tsv
+"$bin" "${keep[@]}" --threads 1 validate_vleness/quick.tsv validate_vleness/quick_vleness.tsv
+"$bin" "${keep[@]}" --threads 4 validate_vleness/quick.tsv validate_vleness/quick_threads.tsv
 cmp -s validate_vleness/quick_vleness.tsv validate_vleness/quick_threads.tsv
 cmp -s validate_vleness/quick_vleness.tsv validate_vleness/quick_expected.tsv
+"$bin" validate_vleness/quick.tsv validate_vleness/quick_default.tsv
+awk 'NR==1 || $1=="internal"' validate_vleness/quick_expected.tsv > validate_vleness/quick_default_expected.tsv
+cmp -s validate_vleness/quick_default.tsv validate_vleness/quick_default_expected.tsv
 
 # RNAfold: full label is cut at the first space, and the energy is stripped.
 {
@@ -50,7 +55,7 @@ cmp -s validate_vleness/quick_vleness.tsv validate_vleness/quick_expected.tsv
     printf 'ACGUACGU\n'
     printf '(.(...)) (-1.20)\n'
 } > validate_vleness/rnafold.in
-"$bin" --rnafold validate_vleness/rnafold.in validate_vleness/rnafold.tsv
+"$bin" "${keep[@]}" --rnafold validate_vleness/rnafold.in validate_vleness/rnafold.tsv
 awk 'NR==1 || $1=="bulge"' validate_vleness/quick_expected.tsv > validate_vleness/rnafold_expected.tsv
 cmp -s validate_vleness/rnafold.tsv validate_vleness/rnafold_expected.tsv
 
@@ -60,8 +65,8 @@ bulge_db=$(awk -F '\t' '$1=="bulge" { print $2; exit }' validate_vleness/quick.t
 {
     printf 'bulge\t-1.20\t%s\t-2.40\t%s\n' "$bulge_db" "$bulge_db"
 } > validate_vleness/lsc.in
-"$bin" --lsc validate_vleness/lsc.in validate_vleness/lsc.tsv
-"$bin" validate_vleness/lsc.in validate_vleness/lsc_auto.tsv
+"$bin" "${keep[@]}" --lsc validate_vleness/lsc.in validate_vleness/lsc.tsv
+"$bin" "${keep[@]}" validate_vleness/lsc.in validate_vleness/lsc_auto.tsv
 cmp -s validate_vleness/lsc.tsv validate_vleness/lsc_auto.tsv
 python3 - "$bulge_line" <<'PY'
 import sys
@@ -73,17 +78,17 @@ PY
 cmp -s validate_vleness/lsc.tsv validate_vleness/lsc_expected.tsv
 
 # A pipe must work: the reader never seeks.
-cat validate_vleness/quick.tsv | "$bin" /dev/stdin validate_vleness/stdin.tsv
+cat validate_vleness/quick.tsv | "$bin" "${keep[@]}" /dev/stdin validate_vleness/stdin.tsv
 cmp -s validate_vleness/stdin.tsv validate_vleness/quick_expected.tsv
 
 # A first row that is not a dot-bracket is a header. A later bad structure
 # is a warning, and --maxerror 0 stops the run after writing accepted rows.
 printf 'name\tfold\nok\t((...))\n' > validate_vleness/header.tsv
-"$bin" validate_vleness/header.tsv validate_vleness/header.out
+"$bin" "${keep[@]}" validate_vleness/header.tsv validate_vleness/header.out
 cmp -s validate_vleness/header.out <(printf 'label\tlength\tpct_bulge\tS\nok\t7\t0.0\t-2.3033\n')
 printf 'good\t((.))\nbad\t((.)\n' > validate_vleness/warn.tsv
 set +e
-"$bin" --maxerror 0 --log validate_vleness/warn.log \
+"$bin" "${keep[@]}" --maxerror 0 --log validate_vleness/warn.log \
     validate_vleness/warn.tsv validate_vleness/warn.out \
     > /dev/null 2> validate_vleness/warn.err
 warn_status=$?
@@ -132,7 +137,7 @@ END {
   big_output/controls_label_seq_ss.tsv \
   > validate_vleness/input.tsv
 
-"$bin" --tsv 1,3 --threads 4 \
+"$bin" "${keep[@]}" --tsv 1,3 --threads 4 \
     validate_vleness/input.tsv \
     validate_vleness/vleness.tsv
 
