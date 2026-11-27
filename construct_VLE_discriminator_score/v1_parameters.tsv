@@ -1,0 +1,6 @@
+feature	transform	train_median	train_iqr	weight
+longest_composite_stem_total_nr_bases	log1p	4.18965	0.649662	0.488448
+longest_composite_stem_pct_total_bases	identity	17.6	18.77	0
+pct_bulge	identity	12	5.21	0.185429
+pct_paired_bases	identity	60.2	7.3	0.326124
+threshold				0.938926

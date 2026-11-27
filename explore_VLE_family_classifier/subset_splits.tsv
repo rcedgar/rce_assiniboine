@@ -1,0 +1,11 @@
+view	depth	parent	feature	oriented_auc	threshold	lower_families	higher_families	n_lower	n_higher	median_lower	median_higher	unstable	expanded
+raw	1	ambivirus+avsunviroid+obelisk+pospiviroid+ribozyvirus+zetavirus	nr_bases	1	2751	avsunviroid,obelisk,pospiviroid,ribozyvirus,zetavirus	ambivirus	22516	617	862	4640	no	lower
+raw	2	avsunviroid+obelisk+pospiviroid+ribozyvirus+zetavirus	nr_unpaired_bases	0.999742	199	avsunviroid,pospiviroid	obelisk,ribozyvirus,zetavirus	7856	14660	101	297	no	both
+raw	3	avsunviroid+pospiviroid	total_nr_bulge_bases	0.970414	69	avsunviroid	pospiviroid	321	7535	56	82	no	neither
+raw	3	obelisk+ribozyvirus+zetavirus	nr_bases	0.999113	774	zetavirus	obelisk,ribozyvirus	5	14655	528	1020	yes	higher
+raw	4	obelisk+ribozyvirus	pB	0.984178	5.45	obelisk	ribozyvirus	13747	908	3.57	7.33	no	neither
+length_adjusted	1	ambivirus+avsunviroid+obelisk+pospiviroid+ribozyvirus+zetavirus	nr_unpaired_bases	0.999999	320.788	avsunviroid,obelisk,pospiviroid,ribozyvirus,zetavirus	ambivirus	22516	617	-37.8159	679.393	no	lower
+length_adjusted	2	avsunviroid+obelisk+pospiviroid+ribozyvirus+zetavirus	nr_paired_bases	0.99966	-12.1406	obelisk,zetavirus	avsunviroid,pospiviroid,ribozyvirus	13752	8764	-134.048	109.767	no	both
+length_adjusted	3	obelisk+zetavirus	nr_paired_bases	0.967818	-81.5232	obelisk	zetavirus	13747	5	-134.063	-28.9838	yes	neither
+length_adjusted	3	avsunviroid+pospiviroid+ribozyvirus	nr_bases_symmetric_loops	0.991414	-10.452	ribozyvirus	avsunviroid,pospiviroid	908	7856	-55.46	34.5561	no	higher
+length_adjusted	4	avsunviroid+pospiviroid	pH	0.968682	1.48426	pospiviroid	avsunviroid	7535	321	-1.18371	4.15223	no	neither

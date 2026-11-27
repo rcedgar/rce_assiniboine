@@ -2,9 +2,11 @@
 """Rank circle-structure features by how well they separate VLE from DECOY.
 
 Each row is one circle. The class is the label prefix (VLE or DECOY).
-Features are scored by a tie-aware Mann-Whitney AUC and by Cohen's d.
-A second AUC is computed after residualizing each feature on log(nr_bases),
-because raw counts largely track circle length.
+The columns are the combined ROD v2 structure features and RCE circle
+features returned by extract_circular_rna_features. They are scored by a
+tie-aware Mann-Whitney AUC and by Cohen's d. A second AUC is computed
+after residualizing each feature on log(nr_bases), because raw counts
+largely track circle length.
 """
 
 from __future__ import annotations
@@ -81,8 +83,18 @@ def _class_is_vle(label: str, line_number: int) -> bool:
     _die(f"ERROR: line {line_number} label '{label}' is not VLE or DECOY")
 
 
-def _load(path: Path) -> tuple[list[str], np.ndarray, np.ndarray]:
-    """Return feature names, values shaped (n, p), and a VLE mask."""
+def _family_of(label: str, line_number: int) -> str:
+    parts = label.split("_", 2)
+    if len(parts) != 3 or parts[0] not in ("VLE", "DECOY") or not parts[1] or not parts[2]:
+        _die(
+            "ERROR: line %d label '%s' is not VLE_family_... or DECOY_family_..."
+            % (line_number, label)
+        )
+    return parts[1]
+
+
+def _load(path: Path) -> tuple[list[str], np.ndarray, np.ndarray, np.ndarray]:
+    """Return feature names, values shaped (n, p), a VLE mask, and family names."""
     try:
         with path.open("r", encoding="utf-8", newline="") as handle:
             first = handle.readline()
@@ -115,12 +127,14 @@ def _load(path: Path) -> tuple[list[str], np.ndarray, np.ndarray]:
 
     values = np.empty((len(pending), len(feature_names)), dtype=np.float64)
     is_vle = np.empty(len(pending), dtype=bool)
+    families = np.empty(len(pending), dtype=object)
     for row_index, (line_number, fields) in enumerate(pending):
         if len(fields) != width:
             _die(
                 f"ERROR: {path}:{line_number} has {len(fields)} columns, expected {width}"
             )
         is_vle[row_index] = _class_is_vle(fields[0], line_number)
+        families[row_index] = _family_of(fields[0], line_number)
         for feature_index, raw in enumerate(fields[1:]):
             try:
                 value = float(raw)
@@ -135,7 +149,7 @@ def _load(path: Path) -> tuple[list[str], np.ndarray, np.ndarray]:
             values[row_index, feature_index] = value
     if not bool(is_vle.any()) or not bool((~is_vle).any()):
         _die("ERROR: need both VLE and DECOY rows")
-    return feature_names, values, is_vle
+    return feature_names, values, is_vle, families.astype(str)
 
 
 def _average_ranks(values: np.ndarray) -> np.ndarray:
@@ -519,6 +533,180 @@ def _write_distributions(
     _save_fig(fig, path)
 
 
+def _balance_weights(families: np.ndarray, is_vle: np.ndarray) -> np.ndarray:
+    """Same family totals as construct_VLE_discriminator_score._row_weights."""
+    py_dir = str(Path(__file__).resolve().parent)
+    if py_dir not in sys.path:
+        sys.path.insert(0, py_dir)
+    from construct_VLE_discriminator_score import _row_weights
+
+    return _row_weights(families, is_vle)
+
+
+def _weighted_quantile(values: np.ndarray, weights: np.ndarray, quantile: float) -> float:
+    order = np.argsort(values, kind="mergesort")
+    cumulative = np.cumsum(weights[order])
+    total = float(cumulative[-1])
+    if total <= 0.0:
+        return float(values[order[0]])
+    index = int(np.searchsorted(cumulative, quantile * total, side="left"))
+    index = min(index, values.size - 1)
+    return float(values[order[index]])
+
+
+def _weighted_limits(column: np.ndarray, weights: np.ndarray) -> tuple[float, float]:
+    low = _weighted_quantile(column, weights, 0.01)
+    high = _weighted_quantile(column, weights, 0.99)
+    if high > low:
+        return low, high
+    pad = 0.5 if low == 0.0 else max(0.5, abs(low) * 0.05)
+    return low - pad, high + pad
+
+
+def _weighted_auc(
+    values: np.ndarray, is_vle: np.ndarray, weights: np.ndarray
+) -> tuple[float, str]:
+    """Weighted Mann-Whitney AUC. Above 0.5, VLE tends to have the larger value."""
+    vle_mass = float(weights[is_vle].sum())
+    decoy_mass = float(weights[~is_vle].sum())
+    if vle_mass <= 0.0 or decoy_mass <= 0.0 or np.all(values == values[0]):
+        return 0.5, "tie"
+    order = np.argsort(values, kind="mergesort")
+    sorted_values = values[order]
+    sorted_vle = is_vle[order]
+    sorted_weights = weights[order]
+    wins = 0.0
+    decoy_below = 0.0
+    start = 0
+    n = values.size
+    while start < n:
+        end = start + 1
+        while end < n and sorted_values[end] == sorted_values[start]:
+            end += 1
+        group_weights = sorted_weights[start:end]
+        group_vle = sorted_vle[start:end]
+        vle_weight = float(group_weights[group_vle].sum())
+        decoy_weight = float(group_weights[~group_vle].sum())
+        wins += vle_weight * decoy_below + 0.5 * vle_weight * decoy_weight
+        decoy_below += decoy_weight
+        start = end
+    auc = wins / (vle_mass * decoy_mass)
+    if auc > 0.5:
+        return auc, "VLE"
+    if auc < 0.5:
+        return auc, "DECOY"
+    return auc, "tie"
+
+
+def _balanced_rows(
+    feature_names: list[str],
+    values: np.ndarray,
+    is_vle: np.ndarray,
+    weights: np.ndarray,
+) -> list[tuple[str, float, float, str]]:
+    rows = []
+    for index, name in enumerate(feature_names):
+        auc, higher = _weighted_auc(values[:, index], is_vle, weights)
+        rows.append((name, auc, max(auc, 1.0 - auc), higher))
+    rows.sort(key=lambda item: (-item[2], item[0]))
+    return rows
+
+
+def _balanced_auc_text(rows: list[tuple[str, float, float, str]]) -> str:
+    lines = [
+        "Family-balanced AUC of each circle feature.",
+        "Each VLE family with at least 20 circles has the same total weight.",
+        "VLE families below 20 keep weight 1 per row.",
+        "Each DECOY family has the same total weight.",
+        "Those totals sum to the VLE row count and the DECOY row count.",
+        "AUC is P(weighted VLE > weighted DECOY) + 0.5 P(tie).",
+        "Oriented AUC is max(AUC, 1-AUC). higher is the class with the larger values.",
+        "",
+        "feature\tauc\toriented_auc\thigher",
+    ]
+    for name, auc, oriented, higher in rows:
+        lines.append("%s\t%.6g\t%.6g\t%s" % (name, auc, oriented, higher))
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _write_balanced_distributions(
+    path: Path,
+    rows: list[tuple[str, float, float, str]],
+    feature_names: list[str],
+    values: np.ndarray,
+    is_vle: np.ndarray,
+    weights: np.ndarray,
+) -> None:
+    n_features = len(rows)
+    ncols = 6 if n_features > 6 else max(1, n_features)
+    nrows = math.ceil(n_features / ncols)
+    fig, axes = plt.subplots(
+        nrows,
+        ncols,
+        figsize=(3.15 * ncols, 2.45 * nrows),
+        squeeze=False,
+    )
+    flat = axes.ravel()
+    name_to_index = {name: index for index, name in enumerate(feature_names)}
+    for panel, (name, _auc, oriented, higher) in enumerate(rows):
+        ax = flat[panel]
+        column = values[:, name_to_index[name]]
+        low, high = _weighted_limits(column, weights)
+        bins = np.linspace(low, high, 41)
+        keep = (column >= low) & (column <= high)
+        decoy = keep & ~is_vle
+        vle = keep & is_vle
+        if np.any(decoy) and float(weights[decoy].sum()) > 0.0:
+            ax.hist(
+                column[decoy],
+                bins=bins,
+                weights=weights[decoy],
+                density=True,
+                color=_COLOR_DECOY,
+                alpha=0.55,
+                label="DECOY",
+            )
+        if np.any(vle) and float(weights[vle].sum()) > 0.0:
+            ax.hist(
+                column[vle],
+                bins=bins,
+                weights=weights[vle],
+                density=True,
+                color=_COLOR_VLE,
+                alpha=0.55,
+                label="VLE",
+            )
+        ax.set_xlim(low, high)
+        if higher == "tie":
+            panel_title = "%s\nAUC %.3f  no class difference" % (name, oriented)
+        else:
+            panel_title = "%s\nAUC %.3f  %s higher" % (name, oriented, higher)
+        ax.set_title(panel_title, fontsize=7)
+        ax.tick_params(labelsize=7)
+        if panel % ncols == 0:
+            ax.set_ylabel("Density", fontsize=8)
+    for panel in range(n_features, flat.size):
+        flat[panel].set_visible(False)
+    fig.legend(
+        handles=[
+            Patch(facecolor=_COLOR_VLE, alpha=0.55, label="VLE"),
+            Patch(facecolor=_COLOR_DECOY, alpha=0.55, label="DECOY"),
+        ],
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.975),
+        ncol=2,
+        frameon=False,
+    )
+    fig.suptitle(
+        "Feature distributions by class, equal family weight, ordered by oriented AUC",
+        fontsize=13,
+        y=0.995,
+    )
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.94))
+    _save_fig(fig, path)
+
+
 def _spearman(values: np.ndarray) -> np.ndarray:
     n_features = values.shape[1]
     centered = np.empty_like(values)
@@ -552,7 +740,8 @@ def _write_correlation(
     ordered = values[:, order]
     names = [score.name for score in scores]
     corr = _spearman(ordered)
-    fig, ax = plt.subplots(figsize=(11.5, 9.5))
+    side = max(9.5, 0.36 * len(names) + 2.0)
+    fig, ax = plt.subplots(figsize=(side + 2.0, side))
     cmap = plt.cm.coolwarm.copy()
     cmap.set_bad("0.85")
     image = ax.imshow(
@@ -580,7 +769,7 @@ def main() -> None:
         _die("ERROR: usage: analyze_circle_features.py [input.tsv] [output_dir]")
     input_path = Path(sys.argv[1]) if len(sys.argv) > 1 else _DEFAULT_INPUT
     output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else _DEFAULT_OUTPUT
-    feature_names, values, is_vle = _load(input_path)
+    feature_names, values, is_vle, families = _load(input_path)
     scores = _score_features(feature_names, values, is_vle)
     adjusted = [score for score in scores if score.oriented_adj is not None]
     adjusted.sort(key=lambda score: (-(score.oriented_adj or 0.0), -abs(score.cohens_d), score.name))
@@ -616,6 +805,19 @@ def main() -> None:
         feature_names,
         values,
     )
+    balance = _balance_weights(families, is_vle)
+    balanced_rows = _balanced_rows(feature_names, values, is_vle, balance)
+    balanced_auc_path = output_dir / "feature_auc_balanced.txt"
+    balanced_auc_path.write_text(_balanced_auc_text(balanced_rows), encoding="utf-8", newline="\n")
+    balanced_dist_path = output_dir / "distributions_balanced.png"
+    _write_balanced_distributions(
+        balanced_dist_path,
+        balanced_rows,
+        feature_names,
+        values,
+        is_vle,
+        balance,
+    )
     print(text, end="")
     print("wrote %s" % ranking_path)
     print("wrote %s" % summary_path)
@@ -623,6 +825,8 @@ def main() -> None:
     print("wrote %s" % (output_dir / "ranking_auc_length_adjusted.png"))
     print("wrote %s" % (output_dir / "distributions.png"))
     print("wrote %s" % (output_dir / "spearman_correlation.png"))
+    print("wrote %s" % balanced_auc_path)
+    print("wrote %s" % balanced_dist_path)
 
 
 if __name__ == "__main__":

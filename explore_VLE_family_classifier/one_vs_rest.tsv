@@ -1,0 +1,7 @@
+family	n	unstable	feature	oriented_auc	family_values	feature_length_adjusted	oriented_auc_length_adjusted	family_values_length_adjusted
+ambivirus	617	no	uKeto	1	higher	nr_unpaired_bases	0.999999	higher
+avsunviroid	321	no	uKeto	0.989986	lower	longest_stem_pct_total_bases	0.936958	higher
+pospiviroid	7535	no	uKeto	0.984523	lower	total_nr_bulge_bases	0.945263	higher
+ribozyvirus	908	no	uKeto	0.967652	higher	pct_true_bulges	0.974577	higher
+obelisk	13747	no	uKeto	0.891578	higher	nr_paired_bases	0.999666	lower
+zetavirus	5	yes	uKeto	0.796221	lower	bKeto	0.838966	lower

@@ -1,0 +1,179 @@
+VLE family features. DECOY rows are discarded.
+The family is the second field of a VLE_family_... label.
+Oriented AUC is max(AUC, 1-AUC). Chance is 0.5.
+higher means that family, or that side, tends to have the larger value.
+Epsilon-squared is the tie-corrected Kruskal-Wallis H / (n - 1).
+Length adjustment residualizes each raw feature except nr_bases on log(nr_bases).
+A pair clears 0.80 when its best single-feature oriented AUC reaches that value.
+A subset split is expanded when its oriented AUC is at least 0.70 and the side has two or more families.
+The threshold is the midpoint of the two side medians.
+Sides are named by the Mann-Whitney direction. A tie is ordered alphabetically.
+A family or a side with fewer than 20 circles is marked unstable.
+In a pair, family_a is the larger family.
+The linear model and the PCA use log1p on counts and lengths, and leave percentages and the named fractions unchanged.
+Duplicate copies and near-constant columns are removed from the linear model and the PCA.
+Near-constant columns are omitted from length-adjusted scores.
+The ridge penalty is 1 on z-scored predictors. The intercept is not penalized. The fit is unweighted.
+Cross-validation is 5-fold, stratified by family, shuffle seed 1.
+
+classes
+VLE	23133
+DECOY_discarded	649778
+families	6
+obelisk	13747	fraction=0.594259	unstable=no
+pospiviroid	7535	fraction=0.325725	unstable=no
+ribozyvirus	908	fraction=0.0392513	unstable=no
+ambivirus	617	fraction=0.0266719	unstable=no
+avsunviroid	321	fraction=0.0138763	unstable=no
+zetavirus	5	fraction=0.000216141	unstable=yes
+
+near-constant features (at least 99% of VLE rows share one value)
+longest_stem_pct_paired_bases	value=100	fraction=1.0000
+
+exact duplicate columns
+longest_stem_nr_paired_bases	longest_stem_total_nr_bases
+pS	pct_paired_bases
+
+removed from the linear model and the PCA
+longest_stem_pct_paired_bases
+longest_stem_total_nr_bases
+pct_paired_bases
+
+top 8 by Kruskal-Wallis epsilon-squared
+1	nr_bases	epsilon2=0.7484	max_ovr_auc=1.0000	extreme=ambivirus	direction=higher
+2	total_nr_bulge_bases	epsilon2=0.7471	max_ovr_auc=1.0000	extreme=ambivirus	direction=higher
+3	nr_paired_bases	epsilon2=0.7467	max_ovr_auc=1.0000	extreme=ambivirus	direction=higher
+4	bulge_length_L2_norm	epsilon2=0.7415	max_ovr_auc=1.0000	extreme=ambivirus	direction=higher
+5	nr_unpaired_bases	epsilon2=0.7399	max_ovr_auc=1.0000	extreme=ambivirus	direction=higher
+6	excess_bulge_nr_bases	epsilon2=0.7376	max_ovr_auc=1.0000	extreme=ambivirus	direction=higher
+7	nr_excess_bulges	epsilon2=0.7320	max_ovr_auc=1.0000	extreme=ambivirus	direction=higher
+8	longest_stem_pct_total_bases	epsilon2=0.7313	max_ovr_auc=1.0000	extreme=ambivirus	direction=lower
+
+top 8 by epsilon-squared after residualizing on log(nr_bases)
+nr_bases is the covariate and is omitted.
+1	nr_paired_bases	epsilon2=0.7503	max_ovr_auc=1.0000	extreme=ambivirus	direction=higher
+2	total_nr_bulge_bases	epsilon2=0.7181	max_ovr_auc=0.9949	extreme=ambivirus	direction=higher
+3	nr_unpaired_bases	epsilon2=0.7127	max_ovr_auc=1.0000	extreme=ambivirus	direction=higher
+4	nr_bases_true_bulges	epsilon2=0.7121	max_ovr_auc=0.9868	extreme=obelisk	direction=lower
+5	excess_bulge_nr_bases	epsilon2=0.6746	max_ovr_auc=0.9930	extreme=ambivirus	direction=higher
+6	nr_bases_symmetric_loops	epsilon2=0.6544	max_ovr_auc=0.9918	extreme=ambivirus	direction=higher
+7	nr_excess_bulges	epsilon2=0.6512	max_ovr_auc=0.9910	extreme=ambivirus	direction=higher
+8	bulge_length_L2_norm	epsilon2=0.4476	max_ovr_auc=0.9905	extreme=ambivirus	direction=higher
+
+one versus rest, best feature
+ambivirus	n=617	raw=uKeto	auc=1.0000	higher	adjusted=nr_unpaired_bases	auc=1.0000	higher	unstable=no
+avsunviroid	n=321	raw=uKeto	auc=0.9900	lower	adjusted=longest_stem_pct_total_bases	auc=0.9370	higher	unstable=no
+pospiviroid	n=7535	raw=uKeto	auc=0.9845	lower	adjusted=total_nr_bulge_bases	auc=0.9453	higher	unstable=no
+ribozyvirus	n=908	raw=uKeto	auc=0.9677	higher	adjusted=pct_true_bulges	auc=0.9746	higher	unstable=no
+obelisk	n=13747	raw=uKeto	auc=0.8916	higher	adjusted=nr_paired_bases	auc=0.9997	lower	unstable=no
+zetavirus	n=5	raw=uKeto	auc=0.7962	lower	adjusted=bKeto	auc=0.8390	lower	unstable=yes
+
+subset tree, raw
+depth=1	auc=1.0000	feature=nr_bases	threshold=2751	higher=ambivirus	lower=avsunviroid,obelisk,pospiviroid,ribozyvirus,zetavirus	n_higher=617	n_lower=22516	median_higher=4640	median_lower=862	expanded=lower	unstable=no
+  depth=2	auc=0.9997	feature=nr_unpaired_bases	threshold=199	higher=obelisk,ribozyvirus,zetavirus	lower=avsunviroid,pospiviroid	n_higher=14660	n_lower=7856	median_higher=297	median_lower=101	expanded=both	unstable=no
+    depth=3	auc=0.9704	feature=total_nr_bulge_bases	threshold=69	higher=pospiviroid	lower=avsunviroid	n_higher=7535	n_lower=321	median_higher=82	median_lower=56	expanded=neither	unstable=no
+    depth=3	auc=0.9991	feature=nr_bases	threshold=774	higher=obelisk,ribozyvirus	lower=zetavirus	n_higher=14655	n_lower=5	median_higher=1020	median_lower=528	expanded=higher	unstable=yes
+      depth=4	auc=0.9842	feature=pB	threshold=5.45	higher=ribozyvirus	lower=obelisk	n_higher=908	n_lower=13747	median_higher=7.33	median_lower=3.57	expanded=neither	unstable=no
+
+subset tree, length-adjusted
+depth=1	auc=1.0000	feature=nr_unpaired_bases	threshold=320.788	higher=ambivirus	lower=avsunviroid,obelisk,pospiviroid,ribozyvirus,zetavirus	n_higher=617	n_lower=22516	median_higher=679.393	median_lower=-37.8159	expanded=lower	unstable=no
+  depth=2	auc=0.9997	feature=nr_paired_bases	threshold=-12.1406	higher=avsunviroid,pospiviroid,ribozyvirus	lower=obelisk,zetavirus	n_higher=8764	n_lower=13752	median_higher=109.767	median_lower=-134.048	expanded=both	unstable=no
+    depth=3	auc=0.9678	feature=nr_paired_bases	threshold=-81.5232	higher=zetavirus	lower=obelisk	n_higher=5	n_lower=13747	median_higher=-28.9838	median_lower=-134.063	expanded=neither	unstable=yes
+    depth=3	auc=0.9914	feature=nr_bases_symmetric_loops	threshold=-10.452	higher=avsunviroid,pospiviroid	lower=ribozyvirus	n_higher=7856	n_lower=908	median_higher=34.5561	median_lower=-55.46	expanded=higher	unstable=no
+      depth=4	auc=0.9687	feature=pH	threshold=1.48426	higher=avsunviroid	lower=pospiviroid	n_higher=321	n_lower=7535	median_higher=4.15223	median_lower=-1.18371	expanded=neither	unstable=no
+
+pairs with best raw oriented AUC >= 0.80
+ambivirus	avsunviroid	n=617+321	raw=nr_bases	auc=1.0000	family_a_values=higher	nr_bases_auc=1.0000	adjusted=nr_unpaired_bases	auc=1.0000	family_a_values_adjusted=higher	unstable=no
+ambivirus	zetavirus	n=617+5	raw=nr_bases	auc=1.0000	family_a_values=higher	nr_bases_auc=1.0000	adjusted=nr_paired_bases	auc=1.0000	family_a_values_adjusted=higher	unstable=yes
+avsunviroid	zetavirus	n=321+5	raw=nr_bases	auc=1.0000	family_a_values=lower	nr_bases_auc=1.0000	adjusted=nr_paired_bases	auc=1.0000	family_a_values_adjusted=higher	unstable=yes
+obelisk	ambivirus	n=13747+617	raw=nr_bases	auc=1.0000	family_a_values=lower	nr_bases_auc=1.0000	adjusted=nr_paired_bases	auc=1.0000	family_a_values_adjusted=lower	unstable=no
+obelisk	avsunviroid	n=13747+321	raw=nr_bases	auc=1.0000	family_a_values=higher	nr_bases_auc=1.0000	adjusted=nr_paired_bases	auc=1.0000	family_a_values_adjusted=lower	unstable=no
+obelisk	pospiviroid	n=13747+7535	raw=nr_bases	auc=1.0000	family_a_values=higher	nr_bases_auc=1.0000	adjusted=nr_paired_bases	auc=1.0000	family_a_values_adjusted=lower	unstable=no
+obelisk	zetavirus	n=13747+5	raw=nr_bases	auc=1.0000	family_a_values=higher	nr_bases_auc=1.0000	adjusted=nr_paired_bases	auc=0.9678	family_a_values_adjusted=lower	unstable=yes
+pospiviroid	ambivirus	n=7535+617	raw=nr_bases	auc=1.0000	family_a_values=lower	nr_bases_auc=1.0000	adjusted=nr_unpaired_bases	auc=1.0000	family_a_values_adjusted=lower	unstable=no
+pospiviroid	zetavirus	n=7535+5	raw=nr_bases	auc=1.0000	family_a_values=lower	nr_bases_auc=1.0000	adjusted=nr_paired_bases	auc=1.0000	family_a_values_adjusted=higher	unstable=yes
+ribozyvirus	ambivirus	n=908+617	raw=nr_bases	auc=1.0000	family_a_values=lower	nr_bases_auc=1.0000	adjusted=nr_paired_bases	auc=1.0000	family_a_values_adjusted=lower	unstable=no
+ribozyvirus	avsunviroid	n=908+321	raw=longest_stem_pct_total_bases	auc=0.9972	family_a_values=lower	nr_bases_auc=0.9938	adjusted=nr_unpaired_bases	auc=0.9914	family_a_values_adjusted=lower	unstable=no
+pospiviroid	ribozyvirus	n=7535+908	raw=nr_unpaired_bases	auc=0.9958	family_a_values=lower	nr_bases_auc=0.9943	adjusted=nr_bases_symmetric_loops	auc=0.9917	family_a_values_adjusted=higher	unstable=no
+ribozyvirus	zetavirus	n=908+5	raw=pct_true_bulges	auc=0.9873	family_a_values=higher	nr_bases_auc=0.9857	adjusted=nr_bases_true_bulges	auc=0.9945	family_a_values_adjusted=higher	unstable=yes
+obelisk	ribozyvirus	n=13747+908	raw=pB	auc=0.9842	family_a_values=lower	nr_bases_auc=0.9835	adjusted=nr_paired_bases	auc=0.9967	family_a_values_adjusted=lower	unstable=no
+pospiviroid	avsunviroid	n=7535+321	raw=total_nr_bulge_bases	auc=0.9704	family_a_values=higher	nr_bases_auc=0.7496	adjusted=pH	auc=0.9687	family_a_values_adjusted=lower	unstable=no
+
+pairs that stay mixed on the best raw feature
+none
+
+length: 15 of 15 pairs clear 0.80 on a raw feature, 15 of 15 still do after residualizing on log(nr_bases), 0 clear only before adjustment, 0 clear only after adjustment.
+nr_bases is the best raw feature for 10 pairs.
+
+shortlist (features that win a split of oriented AUC >= 0.70)
+nr_bases	best_auc=1.0000	views=raw	higher=ambivirus	lower=avsunviroid,obelisk,pospiviroid,ribozyvirus,zetavirus
+nr_unpaired_bases	best_auc=1.0000	views=length_adjusted,raw	higher=ambivirus	lower=avsunviroid,obelisk,pospiviroid,ribozyvirus,zetavirus
+nr_paired_bases	best_auc=0.9997	views=length_adjusted	higher=avsunviroid,pospiviroid,ribozyvirus	lower=obelisk,zetavirus
+nr_bases_symmetric_loops	best_auc=0.9914	views=length_adjusted	higher=avsunviroid,pospiviroid	lower=ribozyvirus
+pB	best_auc=0.9842	views=raw	higher=ribozyvirus	lower=obelisk
+total_nr_bulge_bases	best_auc=0.9704	views=raw	higher=pospiviroid	lower=avsunviroid
+pH	best_auc=0.9687	views=length_adjusted	higher=avsunviroid	lower=pospiviroid
+
+ridge one-versus-rest, balanced accuracy
+nr_bases	0.3333
+all_features	0.6815
+length_residualized	0.4745
+
+per-family recall, nr_bases
+obelisk	1.0000
+pospiviroid	1.0000
+ribozyvirus	0.0000
+ambivirus	0.0000
+avsunviroid	0.0000
+zetavirus	0.0000
+
+per-family recall, all_features
+obelisk	0.9969
+pospiviroid	0.9954
+ribozyvirus	0.8293
+ambivirus	0.9433
+avsunviroid	0.3240
+zetavirus	0.0000
+
+per-family recall, length_residualized
+obelisk	0.9764
+pospiviroid	0.6934
+ribozyvirus	0.7258
+ambivirus	0.0000
+avsunviroid	0.4517
+zetavirus	0.0000
+
+pca variance explained, percent
+raw_transformed	pc1=39.4	pc2=22.5
+length_adjusted	pc1=39.1	pc2=24.0
+PCA points are capped at 300 circles per family. Centroids use every circle.
+
+next classifier
+Balanced accuracy is 0.333 from nr_bases alone, 0.681 from all kept features, and 0.475 after removing log length.
+The other features improve on length in the linear model.
+After residualizing on log(nr_bases), 15 of 15 pairs still reach 0.80.
+14 of those winners are residual counts. A count residual can still follow circle size.
+One winner is a percentage or fraction: pospiviroid versus avsunviroid on pH (0.969).
+uKeto is the best raw one-versus-rest feature for every family. Try it in a family-versus-rest classifier even when the subset tree splits on another feature first.
+Where nr_bases wins the raw comparison, put an explicit length term in the classifier or use the length-adjusted tree.
+The best raw split is oriented AUC 1.000 on nr_bases: higher ambivirus versus lower avsunviroid,obelisk,pospiviroid,ribozyvirus,zetavirus.
+The best length-adjusted split is oriented AUC 1.000 on nr_unpaired_bases: higher ambivirus versus lower avsunviroid,obelisk,pospiviroid,ribozyvirus,zetavirus.
+Start with the shortlist rather than all columns: nr_bases, nr_unpaired_bases, nr_paired_bases, nr_bases_symmetric_loops, pB, total_nr_bulge_bases, pH.
+The ridge fit is unweighted, so the largest family dominates the loss. Read balanced accuracy and the subset tree before raw accuracy.
+zetavirus has fewer than 20 circles. Keep it in the tables, and do not treat a zetavirus call as established.
+Use the confusion matrix to see which families still mix. A classifier of two or more subsets is the goal if the off-block families are the mixed ones.
+
+features with |Spearman rho| < 0.30 versus nr_bases
+Duplicate copies and near-constant columns are omitted.
+uKeto	rho=+0.000	epsilon2=0.0157
+pH	rho=-0.081	epsilon2=0.1981
+longest_composite_stem_pct_paired_bases	rho=+0.118	epsilon2=0.0523
+pB	rho=-0.139	epsilon2=0.1957
+pct_true_bulges	rho=-0.176	epsilon2=0.2372
+pRod	rho=-0.194	epsilon2=0.2937
+pct_symmetric_loops	rho=-0.247	epsilon2=0.1703
+pS	rho=+0.261	epsilon2=0.1285
+bKeto	rho=-0.291	epsilon2=0.1346
+pct_bulge	rho=-0.297	epsilon2=0.2296
+Full tables: family_counts.tsv, feature_family_scores.tsv, pairwise_best_auc.tsv, one_vs_rest.tsv, subset_splits.tsv, family_medians.tsv, confusion_ridge.tsv
+Figures: feature_effect.png, pairwise_best_auc.png, family_median_heatmap.png, pca_families.png, pca_length_adjusted.png, box_top_features.png, box_residual_features.png, box_uncorrelated_features.png, confusion_ridge.png

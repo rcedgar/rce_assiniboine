@@ -1,0 +1,49 @@
+Family-balanced AUC of each circle feature.
+Each VLE family with at least 20 circles has the same total weight.
+VLE families below 20 keep weight 1 per row.
+Each DECOY family has the same total weight.
+Those totals sum to the VLE row count and the DECOY row count.
+AUC is P(weighted VLE > weighted DECOY) + 0.5 P(tie).
+Oriented AUC is max(AUC, 1-AUC). higher is the class with the larger values.
+
+feature	auc	oriented_auc	higher
+pct_bulge	0.993527	0.993527	VLE
+pH	0.00652223	0.993478	DECOY
+pRod	0.992315	0.992315	VLE
+longest_composite_stem_total_nr_bases	0.990107	0.990107	VLE
+longest_composite_stem_nr_paired_bases	0.988811	0.988811	VLE
+pct_symmetric_loops	0.986926	0.986926	VLE
+pF	0.013831	0.986169	DECOY
+pct_excess_bulges	0.985763	0.985763	VLE
+pOnRod	0.9846	0.9846	VLE
+pOffRod	0.0154136	0.984586	DECOY
+bulge_to_stem_ratio	0.982763	0.982763	VLE
+pLongestRod	0.979626	0.979626	VLE
+pDominantSpoke	0.978603	0.978603	VLE
+pJunction	0.0214112	0.978589	DECOY
+pS	0.961803	0.961803	VLE
+pct_paired_bases	0.961803	0.961803	VLE
+pI	0.959596	0.959596	VLE
+pct_true_bulges	0.939717	0.939717	VLE
+longest_composite_stem_pct_total_bases	0.936101	0.936101	VLE
+pLongestPairShare	0.9213	0.9213	VLE
+pSplitStem	0.0787172	0.921283	DECOY
+nBranch	0.0913371	0.908663	DECOY
+pB	0.827819	0.827819	VLE
+bKeto	0.235572	0.764428	DECOY
+nr_excess_bulges	0.661716	0.661716	VLE
+longest_composite_stem_pct_paired_bases	0.338417	0.661583	DECOY
+longest_stem_nr_paired_bases	0.348369	0.651631	DECOY
+longest_stem_total_nr_bases	0.348369	0.651631	DECOY
+nr_bases_true_bulges	0.647987	0.647987	VLE
+excess_bulge_nr_bases	0.64579	0.64579	VLE
+total_nr_bulge_bases	0.64189	0.64189	VLE
+nr_unpaired_bases	0.367215	0.632785	DECOY
+nr_bases_symmetric_loops	0.631194	0.631194	VLE
+bulge_length_L2_norm	0.627679	0.627679	VLE
+uKeto	0.590375	0.590375	VLE
+nr_bases	0.418546	0.581454	DECOY
+longest_stem_pct_total_bases	0.541053	0.541053	VLE
+nr_paired_bases	0.465023	0.534977	DECOY
+max_bulge_len	0.499086	0.500914	DECOY
+longest_stem_pct_paired_bases	0.500009	0.500009	VLE

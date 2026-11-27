@@ -8,3 +8,7 @@ if prompted to run an experiment, always make a script
 bash/EXPERIMENT_NAME.bash
 
 to execute the workflow and results.
+
+prefer to write outputs directly to the intended file under the repo
+root rather than to a tempfile and rename to facilitate progress
+monitoring e.g. by wc -l

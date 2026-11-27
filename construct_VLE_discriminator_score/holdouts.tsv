@@ -1,6 +1,6 @@
-split	w1	w2	w3	w4	train_recall_at_p50	train_precision	test_recall_at_p50	test_precision_at_p50	test_auc	stem_test_recall_at_p50	stem_test_precision_at_p50	stem_test_auc	deployed_precision	deployed_recall	deployed_fpr	train_threshold
-0	0.488448	0	0.185429	0.326124	0.974064	0.500845	0.973975	0.504027	0.993202	0.95824	0.500068	0.987906	0.502431	0.973975	0.0343379	0.938926
-1	0.348505	0	0.193316	0.458179	0.974669	0.500488	0.974235	0.5004	0.993229	0.957721	0.50318	0.988255	0.505022	0.973716	0.0339747	0.904187
-2	0.328378	0	0.208154	0.463468	0.97441	0.500377	0.973716	0.5	0.993453	0.956338	0.500543	0.987932	0.500533	0.973543	0.0345841	0.904565
-3	0.485895	0	0.194307	0.319798	0.975361	0.501266	0.972765	0.500757	0.992903	0.956078	0.50161	0.987693	0.504781	0.972246	0.0339562	0.942708
-4	0.440555	0	0.185339	0.374106	0.975188	0.5002	0.973024	0.501381	0.992846	0.956856	0.504743	0.987512	0.503243	0.972765	0.034184	0.922399
+family	n_test	n_vle	k	train_weighted_recall	train_weighted_precision	train_threshold	holdout_recall	stem_holdout_recall	bKeto	bulge_length_L2_norm	bulge_to_stem_ratio	excess_bulge_nr_bases	longest_composite_stem_nr_paired_bases	longest_composite_stem_pct_paired_bases	longest_composite_stem_pct_total_bases	longest_composite_stem_total_nr_bases	longest_stem_nr_paired_bases	longest_stem_pct_paired_bases	longest_stem_pct_total_bases	longest_stem_total_nr_bases	max_bulge_len	nBranch	nr_bases	nr_bases_symmetric_loops	nr_bases_true_bulges	nr_excess_bulges	nr_paired_bases	nr_unpaired_bases	pB	pDominantSpoke	pF	pH	pI	pJunction	pLongestPairShare	pLongestRod	pOffRod	pOnRod	pRod	pS	pSplitStem	pct_bulge	pct_excess_bulges	pct_paired_bases	pct_symmetric_loops	pct_true_bulges	total_nr_bulge_bases	uKeto
+ambivirus	617	617	4	0.992432	0.500027	0.496069	0.996759	0.993517	0.18	0	0	0	0	0	0	0.252	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.1	0	0.468	0	0	0	0	0	0
+obelisk	13747	13747	1	0.98244	0.553878	1.02745	0.909144	0.945734	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+pospiviroid	7535	7535	3	0.990942	0.500587	0.660953	0.988719	0.926211	0.2	0	0	0	0	0	0	0.4	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.4	0	0	0	0	0	0
+ribozyvirus	908	908	2	0.987035	0.500161	0.771652	0.986784	0.98348	0	0	0	0	0	0	0	0.35	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.65	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+zetavirus	5	5	2	0.987656	0.500492	0.466344	1	1	0.35	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.65	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
