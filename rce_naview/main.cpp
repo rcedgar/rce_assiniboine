@@ -1,12 +1,14 @@
-// Draw one naview SVG per row of a TSV file.
+// Draw one naview figure per row of a TSV file.
 //
 // rce_naview [--label-col N] [--seq-col N] [--db-col N]
 //            [--out-dir DIR] [--wrap N] [--graph-width F]
 //            [--rainbow | --colors LIST | --color-window N] [--threads N]
-//            [--circular] [--header] [--naview-only] input.tsv
+//            [--circular] [--header] [--naview-only] [--png WIDTH,HEIGHT]
+//            input.tsv
 
 #include "filename.hpp"
 #include "naview.hpp"
+#include "png_page.hpp"
 #include "svg_page.hpp"
 
 #include <algorithm>
@@ -42,7 +44,8 @@ static void usage(void) {
                  "usage: rce_naview [--label-col N] [--seq-col N] [--db-col N]\n"
                  "                  [--out-dir DIR] [--wrap N] [--graph-width F]\n"
                  "                  [--rainbow | --colors LIST | --color-window N] [--threads N]\n"
-                 "                  [--circular] [--header] [--naview-only] input.tsv\n"
+                 "                  [--circular] [--header] [--naview-only] [--png WIDTH,HEIGHT]\n"
+                 "                  input.tsv\n"
                  "\n"
                  "Read label, sequence, and dot-bracket columns (1-based; default 1 2 3)\n"
                  "and write one naview SVG per record. The dot-bracket wraps at --wrap\n"
@@ -53,8 +56,11 @@ static void usage(void) {
                  "centered on it (T counts as U; the window wraps when --circular).\n"
                  "--threads is the number of records laid out and drawn at once (default 1).\n"
                  "--naview-only writes the structure alone, still scaled to the\n"
-                 "dot-bracket width. The SVG stem keeps [A-Za-z0-9._], replaces every\n"
-                 "other byte with '_', and is truncated to 80 characters.\n");
+                 "dot-bracket width. --png WIDTH,HEIGHT writes that structure as a 1-bit\n"
+                 "PNG instead of an SVG. WIDTH and HEIGHT are pixels from 1 to 8192.\n"
+                 "Palette and color options do not change the PNG. The file stem keeps\n"
+                 "[A-Za-z0-9._], replaces every other byte with '_', and is truncated\n"
+                 "to 80 characters.\n");
 }
 
 static bool parse_col(const char* text, int* out) {
@@ -122,6 +128,38 @@ static bool parse_factor(const char* text, double* out) {
         return false;
     }
     *out = value;
+    return true;
+}
+
+static bool parse_png_side(const char* text, char** end, int* out) {
+    if (*text < '0' || *text > '9') {
+        return false;
+    }
+    errno = 0;
+    long value = std::strtol(text, end, 10);
+    if (*end == text || errno == ERANGE || value < 1 || value > 8192L) {
+        return false;
+    }
+    *out = static_cast<int>(value);
+    return true;
+}
+
+// WIDTH,HEIGHT. A space after the comma is optional.
+static bool parse_png_size(const char* text, int* width, int* height) {
+    if (!text || !text[0]) {
+        return false;
+    }
+    char* end = 0;
+    if (!parse_png_side(text, &end, width) || *end != ',') {
+        return false;
+    }
+    const char* rest = end + 1;
+    while (*rest == ' ') {
+        rest += 1;
+    }
+    if (!parse_png_side(rest, &end, height) || *end != '\0') {
+        return false;
+    }
     return true;
 }
 
@@ -217,13 +255,13 @@ struct Record {
     NavLayout layout;
 };
 
-static std::string join_svg(const std::string& dir, const std::string& stem) {
+static std::string join_out(const std::string& dir, const std::string& stem, const char* ext) {
     std::string path = dir;
     if (!path.empty() && path.back() != '/' && path.back() != '\\') {
         path.push_back('/');
     }
     path += stem;
-    path += ".svg";
+    path += ext;
     return path;
 }
 
@@ -289,6 +327,9 @@ int main(int argc, char** argv) {
     std::vector<std::string> color_list;
     bool circular = false;
     bool header = false;
+    bool write_png = false;
+    int png_w = 0;
+    int png_h = 0;
     const char* input = 0;
 
     for (int i = 1; i < argc; ++i) {
@@ -318,7 +359,7 @@ int main(int argc, char** argv) {
             std::strcmp(arg, "--db-col") == 0 || std::strcmp(arg, "--out-dir") == 0 ||
             std::strcmp(arg, "--wrap") == 0 || std::strcmp(arg, "--graph-width") == 0 ||
             std::strcmp(arg, "--colors") == 0 || std::strcmp(arg, "--threads") == 0 ||
-            std::strcmp(arg, "--color-window") == 0) {
+            std::strcmp(arg, "--color-window") == 0 || std::strcmp(arg, "--png") == 0) {
             if (i + 1 >= argc) {
                 die("missing option value");
             }
@@ -378,6 +419,13 @@ int main(int argc, char** argv) {
                 die("colors must be a comma-separated list of SVG colors");
             }
             colors_set = true;
+            continue;
+        }
+        if (std::strcmp(arg, "--png") == 0) {
+            if (!parse_png_size(value, &png_w, &png_h)) {
+                die("png size must be WIDTH,HEIGHT with each integer from 1 to 8192");
+            }
+            write_png = true;
             continue;
         }
         if (arg[0] == '-' && arg[1] == '-') {
@@ -502,8 +550,9 @@ int main(int argc, char** argv) {
         const Record& prev = records[order[i - 1]];
         const Record& cur = records[order[i]];
         if (prev.stem == cur.stem) {
-            std::fprintf(stderr, "rce_naview: %s:%d and %s:%d both write %s.svg\n", input,
-                         prev.line_no, input, cur.line_no, cur.stem.c_str());
+            std::fprintf(stderr, "rce_naview: %s:%d and %s:%d both write %s%s\n", input,
+                         prev.line_no, input, cur.line_no, cur.stem.c_str(),
+                         write_png ? ".png" : ".svg");
             return 1;
         }
     }
@@ -522,13 +571,20 @@ int main(int argc, char** argv) {
     const std::string dir(out_dir);
     const char* const* palette = color_ptrs.empty() ? 0 : color_ptrs.data();
     const int npalette = static_cast<int>(color_ptrs.size());
+    const char* ext = write_png ? ".png" : ".svg";
     run_ranges(ranges, [&](int worker, size_t begin, size_t end) {
         for (size_t i = begin; i < end; ++i) {
             const Record& rec = records[i];
-            std::string path = join_svg(dir, rec.stem);
-            if (!write_naview_svg(path.c_str(), rec.label.c_str(), rec.sequence.c_str(),
-                                  rec.db.c_str(), circular, &rec.layout, wrap, graph_width,
-                                  naview_only, rainbow, palette, npalette, color_window)) {
+            std::string path = join_out(dir, rec.stem, ext);
+            bool wrote = false;
+            if (write_png) {
+                wrote = write_naview_png(path.c_str(), &rec.layout, circular, png_w, png_h);
+            } else {
+                wrote = write_naview_svg(path.c_str(), rec.label.c_str(), rec.sequence.c_str(),
+                                         rec.db.c_str(), circular, &rec.layout, wrap, graph_width,
+                                         naview_only, rainbow, palette, npalette, color_window);
+            }
+            if (!wrote) {
                 write_fails[static_cast<size_t>(worker)].index = i;
                 write_fails[static_cast<size_t>(worker)].err_no = errno;
                 write_fails[static_cast<size_t>(worker)].path = std::move(path);
